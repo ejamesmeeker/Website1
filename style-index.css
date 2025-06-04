@@ -1,0 +1,8 @@
+.collision-box {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 0, 0, 0.2); /* low opacity for testing */
+  pointer-events: none;
+  border: 1px solid red; /* remove later if needed */
+}

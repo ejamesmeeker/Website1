@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style-index.css" />
+    <title>E. James Meeker | ENTER</title>
+    <style>
+      body {
+        cursor: none;
+        margin: 0;
+        height: 100vh;
+        background-color: #111;
+      }
+
+      #animated-cursor {
+        position: fixed;
+        pointer-events: none;
+        width: 32px;
+        height: 32px;
+        z-index: 1000;
+        transform: translate(-50% -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      id="animated-cursor"
+      src="Assets/Cursor/Cursor1.1.gif"
+      alt="Custom Humanoid Cursor"
+    />
+
+    <div class="collision-box" style="left: 300px; top: 200px"></div>
+    <div class="collision-box" style="left: 600px; top: 400px"></div>
+
+    <script>
+      const cursor = document.getElementById("animated-cursor");
+      const boxes = document.querySelectorAll(".collision-box");
+
+      let mouseX = 0,
+        mouseY = 0;
+      let currentX = 0,
+        currentY = 0;
+      const delay = 0.2;
+      const buffer = 10; // How far before box to consider "colliding"
+
+      document.addEventListener("mousemove", (e) => {
+        mouseX = e.pageX;
+        mouseY = e.pageY;
+      });
+
+      function isColliding(x, y, box, margin = 0) {
+        const rect = box.getBoundingClientRect();
+        return (
+          x >= rect.left - margin &&
+          x <= rect.right + margin &&
+          y >= rect.top - margin &&
+          y <= rect.bottom + margin
+        );
+      }
+
+      function animate() {
+        let proposedX = currentX + (mouseX - currentX) * delay;
+        let proposedY = currentY + (mouseY - currentY) * delay;
+
+        // We'll test X and Y independently
+        let xBlocked = false;
+        let yBlocked = false;
+
+        boxes.forEach((box) => {
+          const rect = box.getBoundingClientRect();
+
+          // Show visual collision feedback (optional)
+          const visualHit = isColliding(proposedX, proposedY, box, 0);
+          box.style.backgroundColor = visualHit
+            ? "rgba(255, 0, 0, 0.5)"
+            : "rgba(255, 0, 0, 0.2)";
+
+          // Test each axis separately using the buffer
+          if (isColliding(proposedX, currentY, box, buffer)) {
+            xBlocked = true;
+          }
+          if (isColliding(currentX, proposedY, box, buffer)) {
+            yBlocked = true;
+          }
+        });
+
+        // Apply movement only if axis is not blocked
+        if (!xBlocked) currentX = proposedX;
+        if (!yBlocked) currentY = proposedY;
+
+        cursor.style.left = `${currentX}px`;
+        cursor.style.top = `${currentY}px`;
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+    <h1>Welcome</h1>
+    <p><a href="#">Dismantle Internal Structures</a></p>
+  </body>
+</html>
