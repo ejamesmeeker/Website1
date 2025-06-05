@@ -220,7 +220,7 @@ document.addEventListener("touchstart", (e) => {
       camY += (targetCamY - camY) * camDelay;
     }
 
-    const zoom = 1.1;
+    const zoom = 1.0;
     world.style.transform = `translate(${camX}px, ${camY}px) scale(${zoom})`;
 
 if (music) {
