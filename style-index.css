@@ -83,3 +83,14 @@ body, html {
   cursor: pointer;
 }
 
+#toggle-music {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3000;
+  font-size: 24px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}

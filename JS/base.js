@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const walls = document.querySelectorAll(".collision-wall");
   const triggers = document.querySelectorAll(".collision-trigger");
+  
+  const music = document.getElementById("bg-music");
+  const toggle = document.getElementById("toggle-music");
 
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
@@ -37,6 +40,19 @@ document.addEventListener("DOMContentLoaded", () => {
     mouseX = e.clientX;
     mouseY = e.clientY;
   });
+
+  document.addEventListener("touchmove", (e) => {
+  const touch = e.touches[0];
+  if (touch) {
+    mouseX = touch.clientX;
+    mouseY = touch.clientY;
+  }
+}, { passive: false });
+
+document.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+}, { passive: false });
+
 
   function isColliding(worldX, worldY, element) {
     const rect = element.getBoundingClientRect();
@@ -206,6 +222,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const zoom = 1.1;
     world.style.transform = `translate(${camX}px, ${camY}px) scale(${zoom})`;
+
+if (music) {
+    music.addEventListener("loadedmetadata", () => {
+      const duration = music.duration;
+      const randomStart = Math.random() * duration;
+      music.currentTime = randomStart;
+    });
+  }
+
+  if (toggle && music) {
+    toggle.addEventListener("click", () => {
+      if (music.paused) {
+        music.play();
+        toggle.textContent = "🔊";
+      } else {
+        music.pause();
+        toggle.textContent = "🔇";
+      }
+    });
+  }
 
     requestAnimationFrame(animate);
   }
