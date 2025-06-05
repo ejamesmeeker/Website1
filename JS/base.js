@@ -75,17 +75,17 @@ document.addEventListener("DOMContentLoaded", () => {
     galleryContainer.style.left = "50%";
     galleryContainer.style.top = "50%";
     galleryContainer.style.transform = "translate(-50%, -50%) scale(0)";
-    galleryContainer.style.width = "600px";
+    galleryContainer.style.width = "400px";
     galleryContainer.style.height = "400px";
-    galleryContainer.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
-    galleryContainer.style.border = "2px solid white";
-    galleryContainer.style.borderRadius = "8px";
+    galleryContainer.style.backgroundColor = "rgba(200, 200, 200, 0.9)";
+    galleryContainer.style.border = "1px solid white";
+    galleryContainer.style.borderRadius = "4px";
     galleryContainer.style.overflow = "hidden";
     galleryContainer.style.display = "flex";
     galleryContainer.style.justifyContent = "center";
     galleryContainer.style.alignItems = "center";
     galleryContainer.style.zIndex = "2000";
-    galleryContainer.style.transition = "transform 0.3s ease";
+    galleryContainer.style.transition = "transfo0rm 0.2s ease";
 
     const galleryImages = images.map((src) => {
       const img = document.createElement("img");
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     galleryImages[0].style.display = "block";
 
     const closeBtn = document.createElement("button");
-    closeBtn.textContent = "×";
+    closeBtn.textContent = "";
     closeBtn.style.position = "absolute";
     closeBtn.style.top = "10px";
     closeBtn.style.right = "10px";
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(galleryContainer);
 
     requestAnimationFrame(() => {
-      galleryContainer.style.transform = "translate(-50%, -50%) scale(1)";
+      galleryContainer.style.transform = "translate(-50%, -50%) scale(1         )";
     });
 
     function updateSlide() {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slideshowInterval = setInterval(() => {
       currentSlide = (currentSlide + 1) % images.length;
       updateSlide();
-    }, 3000);
+    }, 1000);
   }
 
   function animate() {
