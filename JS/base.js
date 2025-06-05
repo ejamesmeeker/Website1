@@ -221,7 +221,7 @@ document.addEventListener("touchstart", (e) => {
     }
 
     const isMobile = window.innerWidth <= 768; // adjust as needed
-    const zoom = isMobile ? 0.2 : 1.0;
+    const zoom = isMobile ? 0.02 : 1.0;
 
     world.style.transform = `translate(${camX}px, ${camY}px) scale(${zoom})`;
 
