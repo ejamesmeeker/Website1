@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const walls = document.querySelectorAll(".collision-wall");
   const triggers = document.querySelectorAll(".collision-trigger");
-  
+
   const music = document.getElementById("bg-music");
   const toggle = document.getElementById("toggle-music");
 
@@ -15,11 +15,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let camX = 0;
   let camY = 0;
+  let camTargetX = 0;
+  let camTargetY = 0;
 
   const cursorDelay = 0.2;
-  const camDelay = 0.1;
+  const cameraSpeed = 10; // pixels per frame when key is held
   const buffer = 10;
 
+  let keys = {};
+
+  // Track mouse for cursor movement
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Touch support
+  document.addEventListener("touchmove", (e) => {
+    const touch = e.touches[0];
+    if (touch) {
+      mouseX = touch.clientX;
+      mouseY = touch.clientY;
+    }
+  }, { passive: false });
+
+  document.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+  }, { passive: false });
+
+  // Track key input for camera control
+  document.addEventListener("keydown", (e) => keys[e.key] = true);
+  document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+  // Gallery logic (same as before)
   const galleryManifests = {
     gallery1: [
       "Assets/Gallery/gallery1/1-DIS1.jpg",
@@ -28,31 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "Assets/Gallery/gallery1/4-DIS1.jpg",
       "Assets/Gallery/gallery1/5-DIS1.jpg",
     ],
-    // Add more galleries if needed
   };
 
   let slideshowInterval = null;
   let currentSlide = 0;
   let galleryContainer = null;
   let activeTrigger = null;
-
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  document.addEventListener("touchmove", (e) => {
-  const touch = e.touches[0];
-  if (touch) {
-    mouseX = touch.clientX;
-    mouseY = touch.clientY;
-  }
-}, { passive: false });
-
-document.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-}, { passive: false });
-
 
   function isColliding(worldX, worldY, element) {
     const rect = element.getBoundingClientRect();
@@ -69,15 +78,10 @@ document.addEventListener("touchstart", (e) => {
 
   function closeGallery() {
     if (!galleryContainer) return;
-
     clearInterval(slideshowInterval);
     slideshowInterval = null;
-
-    galleryContainer.style.transform = "translate(-50%, -50%) scale(0)";
-    setTimeout(() => {
-      galleryContainer.remove();
-      galleryContainer = null;
-    }, 300);
+    galleryContainer.remove();
+    galleryContainer = null;
   }
 
   function showGallery(galleryId) {
@@ -101,7 +105,7 @@ document.addEventListener("touchstart", (e) => {
     galleryContainer.style.justifyContent = "center";
     galleryContainer.style.alignItems = "center";
     galleryContainer.style.zIndex = "2000";
-    galleryContainer.style.transition = "transfo0rm 0.2s ease";
+    galleryContainer.style.transition = "transform 0.2s ease";
 
     const galleryImages = images.map((src) => {
       const img = document.createElement("img");
@@ -117,7 +121,7 @@ document.addEventListener("touchstart", (e) => {
     galleryImages[0].style.display = "block";
 
     const closeBtn = document.createElement("button");
-    closeBtn.textContent = "";
+    closeBtn.textContent = "×";
     closeBtn.style.position = "absolute";
     closeBtn.style.top = "10px";
     closeBtn.style.right = "10px";
@@ -133,7 +137,7 @@ document.addEventListener("touchstart", (e) => {
     document.body.appendChild(galleryContainer);
 
     requestAnimationFrame(() => {
-      galleryContainer.style.transform = "translate(-50%, -50%) scale(1         )";
+      galleryContainer.style.transform = "translate(-50%, -50%) scale(1)";
     });
 
     function updateSlide() {
@@ -149,92 +153,117 @@ document.addEventListener("touchstart", (e) => {
   }
 
   function animate() {
-    let targetX = currentX + (mouseX - currentX) * cursorDelay;
-    let targetY = currentY + (mouseY - currentY) * cursorDelay;
+  // Update smooth cursor
+  currentX += (mouseX - currentX) * cursorDelay;
+  currentY += (mouseY - currentY) * cursorDelay;
 
-    let worldX = targetX - camX;
-    let worldY = targetY - camY;
+  cursor.style.left = `${currentX}px`;
+  cursor.style.top = `${currentY}px`;
 
-    let xBlocked = false;
-    let yBlocked = false;
+  // --- NEW: Edge scrolling based on cursor position ---
+  const edgeThreshold = 100; // pixels from edge to start moving camera
+  const edgeSpeed = 15;      // how fast camera moves when cursor near edge
 
-    // Wall collision
-    walls.forEach((box) => {
-      if (isColliding(worldX, currentY - camY, box)) xBlocked = true;
-      if (isColliding(currentX - camX, worldY, box)) yBlocked = true;
-    });
+  // Replace the constant speed scrolling with eased speed based on cursor distance to edge
 
-    // Trigger zones
-    let hitTriggerThisFrame = false;
+const easeScroll = (distance) => {
+  // You can adjust the easing curve here; this is a quadratic ease-in
+  const maxSpeed = edgeSpeed;
+  const maxDistance = edgeThreshold;
+  const ratio = Math.min(distance / maxDistance, 1);
+  return maxSpeed * ratio * ratio; // quadratic easing
+};
 
-    triggers.forEach((trigger) => {
-      const hit = isColliding(worldX, worldY, trigger);
-      trigger.style.backgroundColor = hit
-        ? "rgba(0, 255, 0, 0.5)"
-        : "rgba(0, 255, 0, 0.2)";
+// Left edge
+if (currentX < edgeThreshold) {
+  const dist = edgeThreshold - currentX;
+  camTargetX += easeScroll(dist);
+}
 
-      if (hit) {
-        hitTriggerThisFrame = true;
-        if (activeTrigger !== trigger) {
-          activeTrigger = trigger;
-          const galleryId = trigger.getAttribute("data-gallery");
-          if (galleryId) showGallery(galleryId);
-        }
-      } else {
-        if (activeTrigger === trigger) {
-          activeTrigger = null;
-          closeGallery();
-        }
+// Right edge
+else if (currentX > window.innerWidth - edgeThreshold) {
+  const dist = currentX - (window.innerWidth - edgeThreshold);
+  camTargetX -= easeScroll(dist);
+}
+
+// Top edge
+if (currentY < edgeThreshold) {
+  const dist = edgeThreshold - currentY;
+  camTargetY += easeScroll(dist);
+}
+
+// Bottom edge
+else if (currentY > window.innerHeight - edgeThreshold) {
+  const dist = currentY - (window.innerHeight - edgeThreshold);
+  camTargetY -= easeScroll(dist);
+}
+
+
+  // --- Existing keyboard controls for camera ---
+  if (keys["ArrowLeft"] || keys["a"]) camTargetX += cameraSpeed;
+  if (keys["ArrowRight"] || keys["d"]) camTargetX -= cameraSpeed;
+  if (keys["ArrowUp"] || keys["w"]) camTargetY += cameraSpeed;
+  if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
+
+  // Clamp camera to world bounds
+  const worldBoundsX = world.offsetWidth - window.innerWidth;
+  const worldBoundsY = world.offsetHeight - window.innerHeight;
+
+  camTargetX = Math.max(-worldBoundsX, Math.min(0, camTargetX));
+  camTargetY = Math.max(-worldBoundsY, Math.min(0, camTargetY));
+
+  // Smoothly interpolate camera position
+  camX += (camTargetX - camX) * 0.1;
+  camY += (camTargetY - camY) * 0.1;
+
+  // Update world position
+  world.style.transform = `translate(${camX}px, ${camY}px)`;
+
+  // World-relative cursor position
+  const worldX = currentX - camX;
+  const worldY = currentY - camY;
+
+  // Wall collision
+  let xBlocked = false;
+  let yBlocked = false;
+
+  walls.forEach((box) => {
+    if (isColliding(worldX, currentY - camY, box)) xBlocked = true;
+    if (isColliding(currentX - camX, worldY, box)) yBlocked = true;
+  });
+
+  // Trigger zones
+  triggers.forEach((trigger) => {
+    const hit = isColliding(worldX, worldY, trigger);
+    trigger.style.backgroundColor = hit
+      ? "rgba(0, 255, 0, 0.5)"
+      : "rgba(0, 255, 0, 0.2)";
+
+    if (hit) {
+      if (activeTrigger !== trigger) {
+        activeTrigger = trigger;
+        const galleryId = trigger.getAttribute("data-gallery");
+        if (galleryId) showGallery(galleryId);
       }
-    });
-
-    if (xBlocked && yBlocked) {
-      // Do nothing
-    } else if (xBlocked) {
-      currentY = targetY;
-    } else if (yBlocked) {
-      currentX = targetX;
-    } else {
-      currentX = targetX;
-      currentY = targetY;
+    } else if (activeTrigger === trigger) {
+      activeTrigger = null;
+      closeGallery();
     }
+  });
 
-    cursor.style.left = `${currentX}px`;
-    cursor.style.top = `${currentY}px`;
+  requestAnimationFrame(animate);
+}
 
-    const worldWidth = world.offsetWidth;
-    const worldHeight = world.offsetHeight;
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
 
-    let targetCamX = centerX - currentX;
-    let targetCamY = centerY - currentY;
+  animate();
 
-    targetCamX = Math.min(0, Math.max(targetCamX, window.innerWidth - worldWidth));
-    targetCamY = Math.min(0, Math.max(targetCamY, window.innerHeight - worldHeight));
-
-    if (Math.abs(targetCamX - camX) > 1) {
-      camX += (targetCamX - camX) * camDelay;
-    }
-    if (Math.abs(targetCamY - camY) > 1) {
-      camY += (targetCamY - camY) * camDelay;
-    }
-
-    const isMobile = window.innerWidth < 768; // adjust as needed
-    const zoom = isMobile ? 0.2 : 1.0;
-
-    world.style.transform = `translate(${camX}px, ${camY}px) scale(${zoom})`;
-
-if (music) {
+  // Music setup
+  if (music) {
     music.addEventListener("loadedmetadata", () => {
-      const duration = music.duration;
-      const randomStart = Math.random() * duration;
-      music.currentTime = randomStart;
+      music.currentTime = Math.random() * music.duration;
     });
-  }
 
-  if (toggle && music) {
-    toggle.addEventListener("click", () => {
+    toggle?.addEventListener("click", () => {
       if (music.paused) {
         music.play();
         toggle.textContent = "🔊";
@@ -244,12 +273,8 @@ if (music) {
       }
     });
   }
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
 });
+
 
 
 
