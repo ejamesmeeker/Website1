@@ -96,3 +96,9 @@ body, html {
   color: white;
   cursor: pointer;
 }
+
+a {
+  position: fixed;
+  margin-top: 10rem;
+  margin-left: 10rem;
+}
