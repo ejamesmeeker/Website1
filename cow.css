@@ -1,0 +1,11 @@
+#cow {
+  width: 64px;
+  height: 64px;
+  background-image: url("Assets/Images/Cow.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+}

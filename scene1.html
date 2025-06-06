@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style-index.css" />
-    <title>E. James Meeker | ENTER</title>
+    <link rel="stylesheet" href="style-farm.css" />
+    <link rel="stylesheet" href="cow.css" />
+    <title>Farm</title>
     <style>
       body {
         cursor: none;
@@ -22,6 +23,16 @@
         z-index: 1000;
         transform: translate(-50%, -50%);
       }
+      #cow {
+        width: 200px;
+        height: 100px;
+        background-image: url("Assets/Images/Cow.png");
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
     </style>
   </head>
   <body>
@@ -33,25 +44,15 @@
 
     <div id="world-container">
       <!-- wall blocks -->
-      <div class="collision-wall" style="left: 300px; top: 200px"></div>
       <!-- trigger zone -->
-      <div class="collision-trigger" style="left: 600px; top: 400px"></div>
-
-      <div
-        class="collision-trigger"
-        data-gallery="gallery1"
-        style="left: 800px; top: 300px"
-      ></div>
-      <div
-        class="collision-trigger"
-        data-gallery="gallery2"
-        style="left: 1200px; top: 500px"
-      ></div>
-
-      <h1>Welcome</h1>
-      <p><a href="#">Dismantle Internal Structures</a></p>
-      <a href="scene1.html">farm</a>
+      <h1>Farm</h1>
+      <a href="index.html">back to home</a>
     </div>
+
+    <div id="cow"></div>
+    <script src="JS/walk.js"></script>
+
+    <div id="bg-blend-layer"></div>
 
     <div id="gallery-window" class="gallery-hidden">
       <button id="close-gallery">×</button>
@@ -68,5 +69,6 @@
     <button id="toggle-music">🔊</button>
 
     <script src="JS/base.js"></script>
+    <script src="JS/backgroundscroll.js"></script>
   </body>
 </html>
