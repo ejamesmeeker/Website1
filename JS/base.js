@@ -304,20 +304,47 @@ else if (currentY > window.innerHeight - edgeThreshold) {
 
   // Music setup
   if (music) {
-    music.addEventListener("loadedmetadata", () => {
-      music.currentTime = Math.random() * music.duration;
-    });
+  // Start playback at a random point
+  music.addEventListener("loadedmetadata", () => {
+    music.currentTime = Math.random() * music.duration;
+  });
 
-    toggle?.addEventListener("click", () => {
-      if (music.paused) {
-        music.play();
+  // Toggle button logic
+  toggle?.addEventListener("click", () => {
+    if (music.paused) {
+      music.play().then(() => {
         toggle.textContent = "🔊";
-      } else {
-        music.pause();
-        toggle.textContent = "🔇";
-      }
-    });
-  }
+      }).catch((e) => {
+        console.warn("Playback error:", e);
+      });
+    } else {
+      music.pause();
+      toggle.textContent = "🔇";
+    }
+  });
+
+  // Try to autoplay music on first user gesture
+  const tryPlayMusicOnce = () => {
+    if (music.paused) {
+      music.play().then(() => {
+        if (toggle) toggle.textContent = "🔊";
+      }).catch((e) => {
+        console.warn("Autoplay blocked:", e);
+      });
+    }
+
+    // Remove all listeners after first trigger
+    document.removeEventListener("click", tryPlayMusicOnce);
+    document.removeEventListener("keydown", tryPlayMusicOnce);
+    document.removeEventListener("touchstart", tryPlayMusicOnce);
+  };
+
+  document.addEventListener("click", tryPlayMusicOnce);
+  document.addEventListener("keydown", tryPlayMusicOnce);
+  document.addEventListener("touchstart", tryPlayMusicOnce);
+}
+
+
 });
 
 
