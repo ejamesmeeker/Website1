@@ -39,9 +39,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  document.addEventListener("touchstart", (e) => {
+  let touchStartX = 0;
+let touchStartY = 0;
+let touchMoved = false;
+
+document.addEventListener("touchstart", (e) => {
+  const target = e.target;
+
+  // Let taps on links and buttons pass through immediately
+  if (
+    target.tagName === "A" ||
+    target.tagName === "BUTTON" ||
+    target.closest("a") ||
+    target.closest("button")
+  ) {
+    return;
+  }
+
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  touchMoved = false;
+}, { passive: false });
+
+document.addEventListener("touchmove", (e) => {
+  const touch = e.touches[0];
+  const dx = Math.abs(touch.clientX - touchStartX);
+  const dy = Math.abs(touch.clientY - touchStartY);
+
+  // If finger moved more than a small threshold, consider it a scroll
+  if (dx > 10 || dy > 10) {
+    touchMoved = true;
+  }
+
+  if (touchMoved) {
+    // Prevent scrolling of page inside your world container (or always prevent if you want)
     e.preventDefault();
-  }, { passive: false });
+  }
+}, { passive: false });
+
+document.addEventListener("touchend", (e) => {
+  // If touch ended without significant movement, it’s a tap — allow default behavior
+  // No need to prevent default here
+});
+
 
   // Track key input for camera control
   document.addEventListener("keydown", (e) => keys[e.key] = true);
