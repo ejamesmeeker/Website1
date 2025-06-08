@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
    const layerData = [
     {
-      src: "Assets/Images/world/structure1.png",
+      src: "Assets/Images/world/Structure1.png",
       x: 300,
       y: 200,
       z: 11,
