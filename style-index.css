@@ -24,6 +24,7 @@ html, body {
   height: 3000px;
   outline: 1px solid lime;
   will-change: transform;
+  z-index: 1;
   /* Remove transition for frame-perfect updates */
 }
 
