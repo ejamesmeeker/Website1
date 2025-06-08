@@ -3,14 +3,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const world = document.getElementById("world-container");
 
-  const layerData = [
+   const layerData = [
     {
       src: "Assets/Images/world/structure1.png",
       x: 300,
       y: 200,
       z: 11,
     },
+    {
+      src: "Assets/Images/world/above.jpg",
+      x: 2000,
+      y: 200,
+      z: 1,
+    },
   ];
+
 
   layerData.forEach((layer) => {
     const img = document.createElement("img");
