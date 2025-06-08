@@ -1,98 +1,64 @@
+// ------------------------ INIT ------------------------
 document.addEventListener("DOMContentLoaded", () => {
+  // --- DOM Elements ---
   const cursor = document.getElementById("animated-cursor");
   const world = document.getElementById("world-container");
-
   const walls = document.querySelectorAll(".collision-wall");
   const triggers = document.querySelectorAll(".collision-trigger");
-
   const music = document.getElementById("bg-music");
   const toggle = document.getElementById("toggle-music");
 
+  // --- Cursor + Camera State ---
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
   let currentX = mouseX;
   let currentY = mouseY;
+  let camX = 0, camY = 0;
+  let camTargetX = 0, camTargetY = 0;
 
-  let camX = 0;
-  let camY = 0;
-  let camTargetX = 0;
-  let camTargetY = 0;
+  // --- Touch State ---
+  let touchstartX = 0, touchstartY = 0, touchMoved = false;
+  let touchOnInteractive = false;
 
-  const cursorDelay = 0.2;
-  const cameraSpeed = 10; // pixels per frame when key is held
+  // --- Config ---
+  const cursorDelay = 0.1;
+  const cameraSpeed = 10;
   const buffer = 10;
-
   let keys = {};
 
-  // Track mouse for cursor movement
+  // ------------------------ INPUT TRACKING ------------------------
+  // Mouse
   document.addEventListener("mousemove", (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
   });
 
-  // Touch support
-  document.addEventListener("touchmove", (e) => {
+  // Touch
+  document.addEventListener("touchstart", (e) => {
+    const target = e.target;
+    touchOnInteractive = ["A", "BUTTON"].includes(target.tagName) || target.closest("a, button");
     const touch = e.touches[0];
-    if (touch) {
-      mouseX = touch.clientX;
-      mouseY = touch.clientY;
-    }
+    touchstartX = touch.clientX;
+    touchstartY = touch.clientY;
+    touchMoved = false;
   }, { passive: false });
 
-  let touchOnInteractive = false;
+  document.addEventListener("touchmove", (e) => {
+    const touch = e.touches[0];
+    if (touchOnInteractive) return;
+    const dx = Math.abs(touch.clientX - touchstartX);
+    const dy = Math.abs(touch.clientY - touchstartY);
+    if (dx > 10 || dy > 10) touchMoved = true;
+    if (touchMoved) e.preventDefault();
+    mouseX = touch.clientX;
+    mouseY = touch.clientY;
+  }, { passive: false });
 
-document.addEventListener("touchstart", (e) => {
-  const target = e.target;
-
-  // Detect if touch started on interactive element
-  if (
-    target.tagName === "A" ||
-    target.tagName === "BUTTON" ||
-    target.closest("a") ||
-    target.closest("button")
-  ) {
-    touchOnInteractive = true;
-    return;
-  }
-  touchOnInteractive = false;
-
-  const touch = e.touches[0];
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-  touchMoved = false;
-}, { passive: false });
-
-document.addEventListener("touchmove", (e) => {
-  if (touchOnInteractive) {
-    // Allow scroll & taps on links/buttons - no preventDefault
-    return;
-  }
-
-  const touch = e.touches[0];
-  const dx = Math.abs(touch.clientX - touchStartX);
-  const dy = Math.abs(touch.clientY - touchStartY);
-
-  if (dx > 10 || dy > 10) {
-    touchMoved = true;
-  }
-
-  if (touchMoved) {
-    e.preventDefault();
-  }
-}, { passive: false });
-
-
-document.addEventListener("touchend", (e) => {
-  // If touch ended without significant movement, it’s a tap — allow default behavior
-  // No need to prevent default here
-});
-
-
-  // Track key input for camera control
+  // Keyboard
   document.addEventListener("keydown", (e) => keys[e.key] = true);
   document.addEventListener("keyup", (e) => keys[e.key] = false);
 
-  // Gallery logic (same as before)
+  // ------------------------ GALLERY ------------------------
   const galleryManifests = {
     gallery1: [
       "Assets/Gallery/gallery1/1-DIS1.jpg",
@@ -112,7 +78,6 @@ document.addEventListener("touchend", (e) => {
     const rect = element.getBoundingClientRect();
     const boxLeft = rect.left - camX;
     const boxTop = rect.top - camY;
-
     return (
       worldX + buffer > boxLeft &&
       worldX - buffer < boxLeft + rect.width &&
@@ -134,31 +99,35 @@ document.addEventListener("touchend", (e) => {
     if (!images || galleryContainer) return;
 
     currentSlide = 0;
-
     galleryContainer = document.createElement("div");
-    galleryContainer.style.position = "fixed";
-    galleryContainer.style.left = "50%";
-    galleryContainer.style.top = "50%";
-    galleryContainer.style.transform = "translate(-50%, -50%) scale(0)";
-    galleryContainer.style.width = "400px";
-    galleryContainer.style.height = "400px";
-    galleryContainer.style.backgroundColor = "rgba(200, 200, 200, 0.9)";
-    galleryContainer.style.border = "1px solid white";
-    galleryContainer.style.borderRadius = "4px";
-    galleryContainer.style.overflow = "hidden";
-    galleryContainer.style.display = "flex";
-    galleryContainer.style.justifyContent = "center";
-    galleryContainer.style.alignItems = "center";
-    galleryContainer.style.zIndex = "2000";
-    galleryContainer.style.transition = "transform 0.2s ease";
+    Object.assign(galleryContainer.style, {
+      position: "fixed",
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%) scale(0)",
+      width: "400px",
+      height: "400px",
+      backgroundColor: "rgba(200, 200, 200, 0.9)",
+      border: "1px solid white",
+      borderRadius: "4px",
+      overflow: "hidden",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2000,
+      transition: "transform 0.2s ease"
+    });
 
     const galleryImages = images.map((src) => {
       const img = document.createElement("img");
+      Object.assign(img.style, {
+        src,
+        maxWidth: "100%",
+        maxHeight: "100%",
+        position: "absolute",
+        display: "none"
+      });
       img.src = src;
-      img.style.maxWidth = "100%";
-      img.style.maxHeight = "100%";
-      img.style.position = "absolute";
-      img.style.display = "none";
       galleryContainer.appendChild(img);
       return img;
     });
@@ -167,23 +136,22 @@ document.addEventListener("touchend", (e) => {
 
     const closeBtn = document.createElement("button");
     closeBtn.textContent = "×";
-    closeBtn.style.position = "absolute";
-    closeBtn.style.top = "10px";
-    closeBtn.style.right = "10px";
-    closeBtn.style.fontSize = "24px";
-    closeBtn.style.background = "transparent";
-    closeBtn.style.color = "white";
-    closeBtn.style.border = "none";
-    closeBtn.style.cursor = "pointer";
-    closeBtn.style.zIndex = "2100";
-    closeBtn.onclick = closeGallery;
-    galleryContainer.appendChild(closeBtn);
-
-    document.body.appendChild(galleryContainer);
-
-    requestAnimationFrame(() => {
-      galleryContainer.style.transform = "translate(-50%, -50%) scale(1)";
+    Object.assign(closeBtn.style, {
+      position: "absolute",
+      top: "10px",
+      right: "10px",
+      fontSize: "24px",
+      background: "transparent",
+      color: "white",
+      border: "none",
+      cursor: "pointer",
+      zIndex: 2100
     });
+    closeBtn.onclick = closeGallery;
+
+    galleryContainer.appendChild(closeBtn);
+    document.body.appendChild(galleryContainer);
+    requestAnimationFrame(() => galleryContainer.style.transform = "translate(-50%, -50%) scale(1)");
 
     function updateSlide() {
       galleryImages.forEach((img, idx) => {
@@ -197,154 +165,91 @@ document.addEventListener("touchend", (e) => {
     }, 1000);
   }
 
+  // ------------------------ ANIMATION LOOP ------------------------
   function animate() {
-  // Update smooth cursor
-  currentX += (mouseX - currentX) * cursorDelay;
-  currentY += (mouseY - currentY) * cursorDelay;
+    // Smooth cursor follow
+    currentX += (mouseX - currentX) * cursorDelay;
+    currentY += (mouseY - currentY) * cursorDelay;
+    cursor.style.left = `${currentX}px`;
+    cursor.style.top = `${currentY}px`;
 
-  cursor.style.left = `${currentX}px`;
-  cursor.style.top = `${currentY}px`;
+    // Edge-based camera scrolling with easing
+    const edgeThreshold = 100;
+    const edgeSpeed = 15;
+    const easeScroll = (distance) => edgeSpeed * Math.min(distance / edgeThreshold, 1) ** 2;
 
-  // --- NEW: Edge scrolling based on cursor position ---
-  const edgeThreshold = 100; // pixels from edge to start moving camera
-  const edgeSpeed = 15;      // how fast camera moves when cursor near edge
+    if (currentX < edgeThreshold) camTargetX += easeScroll(edgeThreshold - currentX);
+    else if (currentX > window.innerWidth - edgeThreshold) camTargetX -= easeScroll(currentX - (window.innerWidth - edgeThreshold));
+    if (currentY < edgeThreshold) camTargetY += easeScroll(edgeThreshold - currentY);
+    else if (currentY > window.innerHeight - edgeThreshold) camTargetY -= easeScroll(currentY - (window.innerHeight - edgeThreshold));
 
-  // Replace the constant speed scrolling with eased speed based on cursor distance to edge
+    // Keyboard camera controls
+    if (keys["ArrowLeft"] || keys["a"]) camTargetX += cameraSpeed;
+    if (keys["ArrowRight"] || keys["d"]) camTargetX -= cameraSpeed;
+    if (keys["ArrowUp"] || keys["w"]) camTargetY += cameraSpeed;
+    if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
 
-const easeScroll = (distance) => {
-  // You can adjust the easing curve here; this is a quadratic ease-in
-  const maxSpeed = edgeSpeed;
-  const maxDistance = edgeThreshold;
-  const ratio = Math.min(distance / maxDistance, 1);
-  return maxSpeed * ratio * ratio; // quadratic easing
-};
+    // Clamp camera to world bounds
+    camTargetX = Math.max(-world.offsetWidth + window.innerWidth, Math.min(0, camTargetX));
+    camTargetY = Math.max(-world.offsetHeight + window.innerHeight, Math.min(0, camTargetY));
+    camX += (camTargetX - camX) * 0.1;
+    camY += (camTargetY - camY) * 0.1;
 
-// Left edge
-if (currentX < edgeThreshold) {
-  const dist = edgeThreshold - currentX;
-  camTargetX += easeScroll(dist);
-}
+    world.style.transform = `translate(${camX}px, ${camY}px)`;
 
-// Right edge
-else if (currentX > window.innerWidth - edgeThreshold) {
-  const dist = currentX - (window.innerWidth - edgeThreshold);
-  camTargetX -= easeScroll(dist);
-}
+    // Collision & Trigger
+    const worldX = currentX - camX;
+    const worldY = currentY - camY;
 
-// Top edge
-if (currentY < edgeThreshold) {
-  const dist = edgeThreshold - currentY;
-  camTargetY += easeScroll(dist);
-}
+    walls.forEach(box => {
+      if (isColliding(worldX, currentY - camY, box)) return;
+      if (isColliding(currentX - camX, worldY, box)) return;
+    });
 
-// Bottom edge
-else if (currentY > window.innerHeight - edgeThreshold) {
-  const dist = currentY - (window.innerHeight - edgeThreshold);
-  camTargetY -= easeScroll(dist);
-}
-
-
-  // --- Existing keyboard controls for camera ---
-  if (keys["ArrowLeft"] || keys["a"]) camTargetX += cameraSpeed;
-  if (keys["ArrowRight"] || keys["d"]) camTargetX -= cameraSpeed;
-  if (keys["ArrowUp"] || keys["w"]) camTargetY += cameraSpeed;
-  if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
-
-  // Clamp camera to world bounds
-  const worldBoundsX = world.offsetWidth - window.innerWidth;
-  const worldBoundsY = world.offsetHeight - window.innerHeight;
-
-  camTargetX = Math.max(-worldBoundsX, Math.min(0, camTargetX));
-  camTargetY = Math.max(-worldBoundsY, Math.min(0, camTargetY));
-
-  // Smoothly interpolate camera position
-  camX += (camTargetX - camX) * 0.1;
-  camY += (camTargetY - camY) * 0.1;
-
-  // Update world position
-  world.style.transform = `translate(${camX}px, ${camY}px)`;
-
-  // World-relative cursor position
-  const worldX = currentX - camX;
-  const worldY = currentY - camY;
-
-  // Wall collision
-  let xBlocked = false;
-  let yBlocked = false;
-
-  walls.forEach((box) => {
-    if (isColliding(worldX, currentY - camY, box)) xBlocked = true;
-    if (isColliding(currentX - camX, worldY, box)) yBlocked = true;
-  });
-
-  // Trigger zones
-  triggers.forEach((trigger) => {
-    const hit = isColliding(worldX, worldY, trigger);
-    trigger.style.backgroundColor = hit
-      ? "rgba(0, 255, 0, 0.5)"
-      : "rgba(0, 255, 0, 0.2)";
-
-    if (hit) {
-      if (activeTrigger !== trigger) {
+    triggers.forEach(trigger => {
+      const hit = isColliding(worldX, worldY, trigger);
+      trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
+      if (hit && activeTrigger !== trigger) {
         activeTrigger = trigger;
         const galleryId = trigger.getAttribute("data-gallery");
         if (galleryId) showGallery(galleryId);
+      } else if (!hit && activeTrigger === trigger) {
+        activeTrigger = null;
+        closeGallery();
       }
-    } else if (activeTrigger === trigger) {
-      activeTrigger = null;
-      closeGallery();
-    }
-  });
+    });
 
-  requestAnimationFrame(animate);
-}
-
+    requestAnimationFrame(animate);
+  }
 
   animate();
 
-  // Music setup
+  // ------------------------ MUSIC ------------------------
   if (music) {
-  // Start playback at a random point
-  music.addEventListener("loadedmetadata", () => {
-    music.currentTime = Math.random() * music.duration;
-  });
+    music.addEventListener("loadedmetadata", () => {
+      music.currentTime = Math.random() * music.duration;
+    });
 
-  // Toggle button logic
-  toggle?.addEventListener("click", () => {
-    if (music.paused) {
-      music.play().then(() => {
-        toggle.textContent = "🔊";
-      }).catch((e) => {
-        console.warn("Playback error:", e);
-      });
-    } else {
-      music.pause();
-      toggle.textContent = "🔇";
-    }
-  });
+    toggle?.addEventListener("click", () => {
+      if (music.paused) {
+        music.play().then(() => toggle.textContent = "🔊").catch(console.warn);
+      } else {
+        music.pause();
+        toggle.textContent = "🔇";
+      }
+    });
 
-  // Try to autoplay music on first user gesture
-  const tryPlayMusicOnce = () => {
-    if (music.paused) {
-      music.play().then(() => {
-        if (toggle) toggle.textContent = "🔊";
-      }).catch((e) => {
-        console.warn("Autoplay blocked:", e);
-      });
-    }
+    const tryPlayMusicOnce = () => {
+      if (music.paused) music.play().then(() => toggle.textContent = "🔊").catch(console.warn);
+      document.removeEventListener("click", tryPlayMusicOnce);
+      document.removeEventListener("keydown", tryPlayMusicOnce);
+      document.removeEventListener("touchstart", tryPlayMusicOnce);
+    };
 
-    // Remove all listeners after first trigger
-    document.removeEventListener("click", tryPlayMusicOnce);
-    document.removeEventListener("keydown", tryPlayMusicOnce);
-    document.removeEventListener("touchstart", tryPlayMusicOnce);
-  };
-
-  document.addEventListener("click", tryPlayMusicOnce);
-  document.addEventListener("keydown", tryPlayMusicOnce);
-  document.addEventListener("touchstart", tryPlayMusicOnce);
-}
-
-
+    document.addEventListener("click", tryPlayMusicOnce);
+    document.addEventListener("keydown", tryPlayMusicOnce);
+    document.addEventListener("touchstart", tryPlayMusicOnce);
+  }
 });
 
 

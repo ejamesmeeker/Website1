@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- External Styles -->
     <link rel="stylesheet" href="style-index.css" />
+
     <title>E. James Meeker | ENTER</title>
+
+    <!-- Inline base styles -->
     <style>
       body {
         cursor: none;
@@ -24,17 +29,21 @@
       }
     </style>
   </head>
+
   <body>
+    <!-- 🔹 Custom Animated Cursor -->
     <img
       id="animated-cursor"
       src="Assets/Cursor/Cursor1.1.gif"
       alt="Custom Humanoid Cursor"
     />
 
+    <!-- 🔹 Main Container -->
     <div id="world-container">
-      <!-- wall blocks -->
+      <!-- Static Collision Wall -->
       <div class="collision-wall" style="left: 300px; top: 200px"></div>
-      <!-- trigger zone -->
+
+      <!-- Trigger Zones (linked to galleries) -->
       <div class="collision-trigger" style="left: 600px; top: 400px"></div>
 
       <div
@@ -42,30 +51,36 @@
         data-gallery="gallery1"
         style="left: 800px; top: 300px"
       ></div>
+
       <div
         class="collision-trigger"
         data-gallery="gallery2"
         style="left: 1200px; top: 500px"
       ></div>
 
+      <!-- Title & Navigation -->
       <h1>Welcome</h1>
       <a href="scene1.html">farm</a>
     </div>
 
+    <!-- 🔹 Gallery Slideshow Window -->
     <div id="gallery-window" class="gallery-hidden">
-      <button id="close-gallery">×</button>
+      <button id="close-gallery" aria-label="Close Gallery">×</button>
       <div class="slideshow">
         <img id="gallery-image" src="" alt="Slideshow" />
       </div>
     </div>
 
+    <!-- 🔹 Background Music (looped) -->
     <audio id="bg-music" preload="auto" loop>
       <source src="Assets/Audio/bornagain.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
+    <!-- 🔹 Toggle Music Button -->
     <button id="toggle-music" aria-label="Toggle Music">🔇</button>
 
+    <!-- 🔹 JavaScript Logic -->
     <script src="JS/base.js"></script>
   </body>
 </html>

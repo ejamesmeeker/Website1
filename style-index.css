@@ -1,34 +1,41 @@
-body, html {
+/* ============================================================
+   GLOBAL LAYOUT
+   ============================================================ */
+html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent scrollbars */
   height: 100dvh;
   width: 100vw;
-  overflow: hidden;
-  touch-action: none;
+  overflow: hidden;         /* Prevent scrollbars */
+  touch-action: none;       /* Prevent touch scrolling */
   background-color: #111;
   cursor: none;
-  position: relative; /* ensure relative for absolute inside */
+  position: relative;       /* Required for positioned children */
 }
 
+/* ============================================================
+   WORLD CONTAINER
+   ============================================================ */
 #world-container {
   position: absolute;
   top: 0;
   left: 0;
-  will-change: transform;
-  /* Remove transition for smoother, frame-by-frame updates */
-  /* transition: transform 0.1s ease-out; */
-  width: 5000px; /* ensure container is sized to content */
+  width: 5000px;
   height: 3000px;
   outline: 1px solid lime;
+  will-change: transform;
+  /* Remove transition for frame-perfect updates */
 }
 
+/* ============================================================
+   COLLISION OBJECTS
+   ============================================================ */
 .collision-wall,
 .collision-trigger {
   position: absolute;
   width: 100px;
   height: 100px;
-  pointer-events: none;
+  pointer-events: none; /* allows cursor to pass through */
 }
 
 .collision-wall {
@@ -41,7 +48,9 @@ body, html {
   border: 1px solid lime;
 }
 
-
+/* ============================================================
+   GALLERY SLIDESHOW WINDOW
+   ============================================================ */
 #gallery-window {
   position: fixed;
   top: 50%;
@@ -74,6 +83,7 @@ body, html {
   max-height: 100%;
 }
 
+/* Close button inside gallery */
 #close-gallery {
   position: absolute;
   top: 8px;
@@ -85,6 +95,9 @@ body, html {
   cursor: pointer;
 }
 
+/* ============================================================
+   AUDIO TOGGLE BUTTON
+   ============================================================ */
 #toggle-music {
   position: fixed;
   bottom: 20px;
@@ -97,8 +110,14 @@ body, html {
   cursor: pointer;
 }
 
+/* ============================================================
+   NAVIGATION LINK (example link to another scene)
+   ============================================================ */
 a {
   position: fixed;
   margin-top: 10rem;
   margin-left: 10rem;
+  color: white;
+  text-decoration: none;
 }
+
