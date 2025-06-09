@@ -116,16 +116,41 @@ html, body {
 /* ============================================================
    NAVIGATION LINK (example link to another scene)
    ============================================================ */
-a {
+a.farm-link {
   position: fixed;
-  margin-top: 10rem;
-  margin-left: 10rem;
+ left: 1500px;
+ top: 650px;
   color: white;
   text-decoration: none;
+  z-index: 15;
+  text-decoration: line-through;
+  font-size: 72px;
 }
 
-#rotatingForm {
+a.about-link {
+  position: fixed;
+ left: 1500px;
+ top: 750px;
+  color: white;
+  text-decoration: none;
+  z-index: 15;
+  text-decoration: line-through;
+  font-size: 72px;
+}
+
+a:hover {
+  color: dodgerblue;
+  background-color: tomato;
+  border-radius: 10px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.rotatingForm {
   position: absolute;
+  size: 200%;
   right: 500px;
+  top: 300px;
+  flex-wrap: wrap;
 }
 

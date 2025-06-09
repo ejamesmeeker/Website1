@@ -206,18 +206,36 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isColliding(currentX - camX, worldY, box)) return;
     });
 
-    triggers.forEach(trigger => {
-      const hit = isColliding(worldX, worldY, trigger);
-      trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
-      if (hit && activeTrigger !== trigger) {
-        activeTrigger = trigger;
-        const galleryId = trigger.getAttribute("data-gallery");
-        if (galleryId) showGallery(galleryId);
-      } else if (!hit && activeTrigger === trigger) {
-        activeTrigger = null;
-        closeGallery();
-      }
-    });
+  let hasOpenedUrl = false; // add this near the top of your DOMContentLoaded or outer scope
+
+// Inside your triggers.forEach loop:
+triggers.forEach(trigger => {
+  const hit = isColliding(worldX, worldY, trigger);
+  trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
+  
+  if (hit && activeTrigger !== trigger) {
+    activeTrigger = trigger;
+
+    const galleryId = trigger.getAttribute("data-gallery");
+    if (galleryId) {
+      showGallery(galleryId);
+    }
+
+    const url = trigger.getAttribute("data-url");
+    if (url && !hasOpenedUrl) {
+      hasOpenedUrl = true;  // mark URL as opened
+      window.open(url, "_self");
+    }
+
+  } else if (!hit && activeTrigger === trigger) {
+    activeTrigger = null;
+    closeGallery();
+    hasOpenedUrl = false; // reset when leaving trigger zone
+  }
+});
+
+
+
 
     requestAnimationFrame(animate);
   }
