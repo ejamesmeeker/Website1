@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
       y: 200,
       z: 1,
     },
+    {
+      src: "Assets/Images/world/galleryMan3.png",
+      x: 0,
+      y: 0,
+      z: 12,
+    },
   ];
 
 
