@@ -175,7 +175,7 @@ a:hover {
 .welcome {
   color: grey;
   text-decoration: line-through;
-  text-decoration-color: rgba(255, 50, 50, .5);
+  text-decoration-color: rgba(255, 50, 50, .25);
   text-decoration-thickness: 5px;
   background: rgba(50, 50, 50, .3);
   border: solid 2px rgba(100, 100, 100, .2);
@@ -184,4 +184,9 @@ a:hover {
   margin: 1rem;
   text-align: center;
   font-size: small;
+}
+
+.title {
+  font-size: 100px;
+  margin: 1rem;
 }
