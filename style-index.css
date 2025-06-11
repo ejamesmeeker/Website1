@@ -118,7 +118,7 @@ html, body {
    ============================================================ */
 a.farm-link {
   position: fixed;
- left: 1500px;
+ left: 1650px;
  top: 650px;
   color: white;
   text-decoration: none;
@@ -129,7 +129,7 @@ a.farm-link {
 
 a.about-link {
   position: fixed;
- left: 1500px;
+ left: 1650px;
  top: 750px;
   color: white;
   text-decoration: none;

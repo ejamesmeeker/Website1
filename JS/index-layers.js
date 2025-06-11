@@ -8,9 +8,65 @@ const layerData = [
     parallax: 0.7, // parallax layer
   },
   {
-    src: "",
-    x: 100,
+    src: "Assets/Images/world/Structure1.png",
+    x: 300,
     y: 200,
+    z: 1,
+    parallax: 0.8, // parallax layer
+  },
+  {
+    src: "Assets/Images/world/Structure1.png",
+    x: 300,
+    y: 200,
+    z: 1,
+    parallax: 0.9, // parallax layer
+  },
+  {
+    src: "Assets/Images/world/Structure1.png",
+    x: 300,
+    y: 200,
+    z: 1,
+    parallax: 1, // parallax layer
+  },
+  {
+    src: "Assets/Images/world/Structure1.png",
+    x: 300,
+    y: 200,
+    z: 1,
+    parallax: 1.1, // parallax layer
+  },
+  {
+    src: "Assets/Images/world/electric.png",
+    x: 100,
+    y: 100,
+    z: 1,
+    parallax: .5,
+  },
+  {
+    src: "Assets/Images/world/electric.png",
+    x: 200,
+    y: 100,
+    z: 1,
+    parallax: .6,
+  },
+  {
+    src: "Assets/Images/world/electric.png",
+    x: 300,
+    y: 100,
+    z: 1,
+    parallax: .7,
+  },
+  {
+    src: "Assets/Images/world/electric.png",
+    x: 400,
+    y: 100,
+    z: 1,
+    parallax: .8,
+  },
+  {
+    src: "Assets/Images/world/electric.png",
+    x: 500,
+    y: 100,
     z: 1,
     parallax: .9,
   },
@@ -62,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Scale formula - tweak divisor and multiplier for effect strength
     const scale = 1 - (dist / 2000); // shrinks with distance, min cap needed
-if (scale < 0.5) scale = 1;    // clamp min scale
+if (scale < 0.1) scale = 1;    // clamp min scale
 
 
     el.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
