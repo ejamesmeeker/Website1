@@ -116,26 +116,43 @@ html, body {
 /* ============================================================
    NAVIGATION LINK (example link to another scene)
    ============================================================ */
-a.farm-link {
-  position: fixed;
- left: 1650px;
- top: 650px;
-  color: white;
+  a {
+    color: white;
   text-decoration: none;
   z-index: 15;
   text-decoration: line-through;
   font-size: 72px;
+  font-weight: 100;
+  }
+
+   a.farm-link {
+  position: fixed;
+ left: 1650px;
+ top: 350px;
 }
 
 a.about-link {
   position: fixed;
  left: 1650px;
+ top: 550px;
+}
+
+a.shop-link {
+  position: fixed;
+ left: 1650px;
+ top: 450px;
+}
+
+a.links-link {
+  position: fixed;
+ left: 1650px;
+ top: 650px;
+}
+
+a.contact-link {
+  position: fixed;
+ left: 1650px;
  top: 750px;
-  color: white;
-  text-decoration: none;
-  z-index: 15;
-  text-decoration: line-through;
-  font-size: 72px;
 }
 
 a:hover {
@@ -155,3 +172,12 @@ a:hover {
   z-index: 15;
 }
 
+.welcome {
+  color: grey;
+  background: rgba(50, 50, 50, .5);
+  border: solid 2px #fff;
+  width: 10rem;
+  height: 20rem;
+  margin: 1rem;
+  text-align: center;
+}
