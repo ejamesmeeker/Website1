@@ -9,9 +9,10 @@ const layerData = [
   },
   {
     src: "",
-    x: 2000,
+    x: 100,
     y: 200,
     z: 1,
+    parallax: .9,
   },
   {
     src: "Assets/Images/world/galleryMan3.png",

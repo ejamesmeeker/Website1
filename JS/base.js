@@ -190,8 +190,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
 
   // Clamp camera to world bounds
-  camTargetX = Math.max(-world.offsetWidth + window.innerWidth, Math.min(0, camTargetX));
-  camTargetY = Math.max(-world.offsetHeight + window.innerHeight, Math.min(0, camTargetY));
+  // Camera clamp buffer to prevent hard stops
+const clampBuffer = 50; // tweak this number if needed
+
+camTargetX = Math.max(-world.offsetWidth + window.innerWidth - clampBuffer, Math.min(0, camTargetX));
+camTargetY = Math.max(-world.offsetHeight + window.innerHeight - clampBuffer, Math.min(0, camTargetY));
+
+// Clamp cursor to viewport so it never leaves visible area
+mouseX = Math.min(window.innerWidth, Math.max(0, mouseX));
+mouseY = Math.min(window.innerHeight, Math.max(0, mouseY));
+
   camX += (camTargetX - camX) * 0.1;
   camY += (camTargetY - camY) * 0.1;
 
