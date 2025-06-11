@@ -179,8 +179,9 @@ a:hover {
   text-decoration-thickness: 5px;
   background: rgba(50, 50, 50, .3);
   border: solid 2px rgba(100, 100, 100, .2);
+  border-radius: 10px;
   width: 7rem;
-  height: 20rem;
+  height: 5rem;
   margin: 1rem;
   text-align: center;
   font-size: small;
