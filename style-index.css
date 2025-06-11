@@ -152,5 +152,6 @@ a:hover {
   right: 500px;
   top: 300px;
   flex-wrap: wrap;
+  z-index: 15;
 }
 

@@ -167,78 +167,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ------------------------ ANIMATION LOOP ------------------------
   function animate() {
-    // Smooth cursor follow
-    currentX += (mouseX - currentX) * cursorDelay;
-    currentY += (mouseY - currentY) * cursorDelay;
-    cursor.style.left = `${currentX}px`;
-    cursor.style.top = `${currentY}px`;
+  // Smooth cursor follow
+  currentX += (mouseX - currentX) * cursorDelay;
+  currentY += (mouseY - currentY) * cursorDelay;
+  cursor.style.left = `${currentX}px`;
+  cursor.style.top = `${currentY}px`;
 
-    // Edge-based camera scrolling with easing
-    const edgeThreshold = 100;
-    const edgeSpeed = 15;
-    const easeScroll = (distance) => edgeSpeed * Math.min(distance / edgeThreshold, 1) ** 2;
+  // Edge-based camera scrolling with easing
+  const edgeThreshold = 100;
+  const edgeSpeed = 15;
+  const easeScroll = (distance) => edgeSpeed * Math.min(distance / edgeThreshold, 1) ** 2;
 
-    if (currentX < edgeThreshold) camTargetX += easeScroll(edgeThreshold - currentX);
-    else if (currentX > window.innerWidth - edgeThreshold) camTargetX -= easeScroll(currentX - (window.innerWidth - edgeThreshold));
-    if (currentY < edgeThreshold) camTargetY += easeScroll(edgeThreshold - currentY);
-    else if (currentY > window.innerHeight - edgeThreshold) camTargetY -= easeScroll(currentY - (window.innerHeight - edgeThreshold));
+  if (currentX < edgeThreshold) camTargetX += easeScroll(edgeThreshold - currentX);
+  else if (currentX > window.innerWidth - edgeThreshold) camTargetX -= easeScroll(currentX - (window.innerWidth - edgeThreshold));
+  if (currentY < edgeThreshold) camTargetY += easeScroll(edgeThreshold - currentY);
+  else if (currentY > window.innerHeight - edgeThreshold) camTargetY -= easeScroll(currentY - (window.innerHeight - edgeThreshold));
 
-    // Keyboard camera controls
-    if (keys["ArrowLeft"] || keys["a"]) camTargetX += cameraSpeed;
-    if (keys["ArrowRight"] || keys["d"]) camTargetX -= cameraSpeed;
-    if (keys["ArrowUp"] || keys["w"]) camTargetY += cameraSpeed;
-    if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
+  // Keyboard camera controls
+  if (keys["ArrowLeft"] || keys["a"]) camTargetX += cameraSpeed;
+  if (keys["ArrowRight"] || keys["d"]) camTargetX -= cameraSpeed;
+  if (keys["ArrowUp"] || keys["w"]) camTargetY += cameraSpeed;
+  if (keys["ArrowDown"] || keys["s"]) camTargetY -= cameraSpeed;
 
-    // Clamp camera to world bounds
-    camTargetX = Math.max(-world.offsetWidth + window.innerWidth, Math.min(0, camTargetX));
-    camTargetY = Math.max(-world.offsetHeight + window.innerHeight, Math.min(0, camTargetY));
-    camX += (camTargetX - camX) * 0.1;
-    camY += (camTargetY - camY) * 0.1;
+  // Clamp camera to world bounds
+  camTargetX = Math.max(-world.offsetWidth + window.innerWidth, Math.min(0, camTargetX));
+  camTargetY = Math.max(-world.offsetHeight + window.innerHeight, Math.min(0, camTargetY));
+  camX += (camTargetX - camX) * 0.1;
+  camY += (camTargetY - camY) * 0.1;
 
-    world.style.transform = `translate(${camX}px, ${camY}px)`;
+  world.style.transform = `translate(${camX}px, ${camY}px)`;
 
-    // Collision & Trigger
-    const worldX = currentX - camX;
-    const worldY = currentY - camY;
+  // ✅ Update parallax layers (from index-layers.js)
+  if (window.updateCamera) window.updateCamera(camX, camY);
 
-    walls.forEach(box => {
-      if (isColliding(worldX, currentY - camY, box)) return;
-      if (isColliding(currentX - camX, worldY, box)) return;
-    });
+  // Collision detection
+  const worldX = currentX - camX;
+  const worldY = currentY - camY;
 
-  let hasOpenedUrl = false; // add this near the top of your DOMContentLoaded or outer scope
+  walls.forEach(box => {
+    if (isColliding(worldX, currentY - camY, box)) return;
+    if (isColliding(currentX - camX, worldY, box)) return;
+  });
 
-// Inside your triggers.forEach loop:
-triggers.forEach(trigger => {
-  const hit = isColliding(worldX, worldY, trigger);
-  trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
-  
-  if (hit && activeTrigger !== trigger) {
-    activeTrigger = trigger;
+  triggers.forEach(trigger => {
+    const hit = isColliding(worldX, worldY, trigger);
+    trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
 
-    const galleryId = trigger.getAttribute("data-gallery");
-    if (galleryId) {
-      showGallery(galleryId);
+    if (hit && activeTrigger !== trigger) {
+      activeTrigger = trigger;
+
+      const galleryId = trigger.getAttribute("data-gallery");
+      if (galleryId) showGallery(galleryId);
+
+      const url = trigger.getAttribute("data-url");
+      if (url && !hasOpenedUrl) {
+        hasOpenedUrl = true;
+        window.open(url, "_self");
+      }
+    } else if (!hit && activeTrigger === trigger) {
+      activeTrigger = null;
+      closeGallery();
+      hasOpenedUrl = false;
     }
+  });
 
-    const url = trigger.getAttribute("data-url");
-    if (url && !hasOpenedUrl) {
-      hasOpenedUrl = true;  // mark URL as opened
-      window.open(url, "_self");
-    }
+  requestAnimationFrame(animate);
+}
 
-  } else if (!hit && activeTrigger === trigger) {
-    activeTrigger = null;
-    closeGallery();
-    hasOpenedUrl = false; // reset when leaving trigger zone
-  }
-});
-
-
-
-
-    requestAnimationFrame(animate);
-  }
 
   animate();
 
