@@ -43,7 +43,7 @@ const layerData = [
     z: 2,
     parallax: 1.1, // parallax layer
     transformType: "skew",
-    intensity: .8
+    intensity: -.8,
   },
   {
     src: "Assets/Images/world/electric.png",
@@ -81,7 +81,7 @@ const layerData = [
     parallax: .9,
   },
   {
-    src: "Assets/Images/world/tube.png",
+    src: "",
     x: 0,
     y: 0,
     z: 1,
@@ -162,6 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (layer.intensity !== undefined) {
   img.dataset.intensity = layer.intensity;
 }
+if (layer.reverse) {
+  img.dataset.reverse = "true";
+}
+
 
 
     // Store base position and parallax data
@@ -184,8 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const transformType = el.dataset.transformType || "translate";
     const intensity = parseFloat(el.dataset.intensity) || 1;
 
-    const dx = cameraX * factor;
-    const dy = cameraY * factor;
+    const isReversed = el.dataset.reverse === "true";
+
+const dx = cameraX * factor * (isReversed ? -1 : 1);
+const dy = cameraY * factor * (isReversed ? -1 : 1);
+
     const x = baseX - dx;
     const y = baseY - dy;
 
