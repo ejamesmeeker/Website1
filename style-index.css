@@ -116,10 +116,10 @@ html, body {
 /* ============================================================
    NAVIGATION LINK (example link to another scene)
    ============================================================ */
-  a {
+   a {
     color: white;
   text-decoration: none;
-  z-index: 15;
+  z-index: 30;
   text-decoration: line-through;
   font-size: 72px;
   font-weight: 100;
@@ -163,6 +163,7 @@ a:hover {
   padding-right: 2rem;
 }
 
+
 .rotatingForm {
   position: absolute;
   size: 300%;
@@ -192,3 +193,5 @@ a:hover {
   font-size: 100px;
   margin: 1rem;
 }
+
+
