@@ -169,6 +169,16 @@ const layerData = [
     z: 16,
     parallax: .4,
   },
+  {
+    src: "Assets/Images/world/flowers.png",
+    x: 1000,
+    y: 0,
+    z: 1,
+    parallax: .1,
+    reverse: true,
+    transformType: "translate-scale",
+    intensity: 10,
+  },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
