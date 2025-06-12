@@ -169,7 +169,8 @@ a:hover {
   right: 500px;
   top: 300px;
   flex-wrap: wrap;
-  z-index: 15;
+  z-index: 17;
+  box-shadow: 10px 10px #fff;
 }
 
 .welcome {
