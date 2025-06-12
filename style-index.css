@@ -165,7 +165,7 @@ a:hover {
 
 .rotatingForm {
   position: absolute;
-  size: 200%;
+  size: 300%;
   right: 500px;
   top: 300px;
   flex-wrap: wrap;
