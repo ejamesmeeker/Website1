@@ -116,51 +116,22 @@ html, body {
 /* ============================================================
    NAVIGATION LINK (example link to another scene)
    ============================================================ */
-   a {
-    color: white;
-  text-decoration: none;
-  z-index: 30;
-  text-decoration: line-through;
-  font-size: 72px;
-  font-weight: 100;
-  }
 
-   a.farm-link {
-  position: fixed;
- left: 1650px;
- top: 350px;
-}
-
-a.about-link {
-  position: fixed;
- left: 1650px;
- top: 550px;
-}
-
-a.shop-link {
-  position: fixed;
- left: 1650px;
- top: 450px;
-}
-
+a.farm-link,
+a.about-link,
+a.shop-link,
+a.contact-link,
 a.links-link {
-  position: fixed;
- left: 1650px;
- top: 650px;
+  position: relative; /* or remove altogether */
+  left: 0;
+  top: 0;
 }
 
-a.contact-link {
-  position: fixed;
- left: 1650px;
- top: 750px;
-}
 
 a:hover {
   color: dodgerblue;
   background-color: tomato;
   border-radius: 10px;
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 
@@ -193,5 +164,33 @@ a:hover {
   font-size: 100px;
   margin: 1rem;
 }
+
+.links-box {
+  position: absolute; /* or fixed if you want it to stick to viewport */
+  top: 350px;
+  left: 1600px;
+  background-color: rgba(0, 0, 50, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid #111;
+  padding: 70px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 40;
+}
+
+.links-box a {
+  padding: .25rem .25rem;
+  color: white;
+  text-decoration: none;
+  text-decoration: line-through;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  font-size: 60px;
+}
+
+
 
 
