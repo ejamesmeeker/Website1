@@ -1,0 +1,97 @@
+/* RESET + BASE STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  background-color: #111;
+  letter-spacing: .5rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LINKS BOX CONTAINER */
+#links-box {
+  background: rgba(0, 0, 50, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  z-index: 10;
+}
+
+/* LINK STYLING */
+#links-box a {
+  color: white;
+  font-size: 2rem;
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+#links-box a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* FOR FADE-IN ANIMATION ON LOAD */
+body {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* BLINKING CURSOR LOGIC */
+#links-box a::after {
+  content: "";
+  display: inline-block;
+  width: 1ch;
+  margin-left: 0.5ch;
+  opacity: 0;
+  animation: blink 1s step-start infinite;
+  color: white;
+}
+
+/* Add cursor to hovered link */
+#links-box a:hover::after {
+  content: "▍";
+  opacity: 1;
+}
+
+/* Add cursor to the first link when idle (no hover) */
+#links-box:not(:hover) a:first-child::after {
+  content: "▍";
+  opacity: 1;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+

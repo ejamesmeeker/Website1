@@ -3,7 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+      rel="stylesheet"
+    />
     <title>E. James Meeker | links</title>
+    <link rel="stylesheet" href="style-links.css" />
   </head>
-  <body></body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const links = document.querySelectorAll("#links-box a");
+      let activeLink = links[0]; // default to first link
+
+      // Initialize default cursor
+      activeLink.classList.add("blinking-cursor");
+
+      links.forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          if (activeLink) activeLink.classList.remove("blinking-cursor");
+          link.classList.add("blinking-cursor");
+          activeLink = link;
+        });
+      });
+    });
+  </script>
+
+  <body>
+    <div id="links-box">
+      <a href="#">home</a>
+      <a href="#">shop</a>
+      <a href="#">bandcamp</a>
+      <a href="#">youtube</a>
+      <a href="#">spotify</a>
+      <a href="#">blog</a>
+      <a href="#">contact</a>
+    </div>
+  </body>
 </html>
