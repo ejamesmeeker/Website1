@@ -118,8 +118,8 @@ html, body {
    ============================================================ */
 
 a.farm-link,
-a.about-link,
 a.shop-link,
+a.about-link,
 a.contact-link,
 a.links-link {
   position: relative; /* or remove altogether */
@@ -190,6 +190,30 @@ a:hover {
   border-radius: 10px;
   font-size: 60px;
 }
+
+#fade-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #111; /* or black */
+  opacity: 1; /* Start fully opaque for fade-in on load */
+  pointer-events: auto;
+  transition: opacity 1s ease;
+  z-index: 9999;
+}
+
+/* When hidden, overlay is transparent and clicks pass through */
+#fade-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+
+
+
 
 
 
