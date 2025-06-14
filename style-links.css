@@ -12,7 +12,8 @@ html, body {
   font-optical-sizing: auto;
   font-weight: 100;
   font-style: normal;
-  background-color: #111;
+  background-image: url(Assets/Images/beer.jpg);
+  background-size: 100vh;
   letter-spacing: .5rem;
   color: white;
   display: flex;
@@ -48,6 +49,7 @@ html, body {
 }
 
 #links-box a:hover {
+    color: #111;
   background-color: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.3);
   transform: scale(1.05);
