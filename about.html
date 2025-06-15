@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About</title>
+    <title>E. James Meeker | ABOUT</title>
 
     <!-- JetBrains Mono Font -->
     <link
@@ -20,7 +20,7 @@
         background: transparent;
         color: white;
         font-family: "JetBrains Mono", monospace;
-        background-color: #0a0a0a;
+        background-color: rgb(20, 20, 20);
       }
 
       .typewriter-container {
@@ -38,11 +38,20 @@
         font-size: 1.1rem;
         line-height: 1.6;
         word-break: break-word;
+        color: rgba(255, 255, 255, 0.85);
+        text-shadow: 0 0 5px rgba(0, 255, 128, 0.1),
+          0 0 10px rgba(0, 255, 128, 0.05);
+        backdrop-filter: blur(2px);
       }
 
       .paragraph {
         margin-bottom: 1rem;
         width: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px); /* Safari support */
+        padding: 0.5rem;
+        border-radius: 4px;
       }
 
       .blinking-cursor {
@@ -68,14 +77,110 @@
           padding: 1rem;
         }
       }
+
+      /* ======= BACKGROUND BLOBS ======= */
+      .blob-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none; /* Allows clicks to pass through */
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.35;
+        mix-blend-mode: screen;
+        animation: float 30s ease-in-out infinite;
+      }
+
+      .blob1 {
+        background: #00ff99;
+        width: 1000px;
+        height: 1000px;
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+
+      .blob2 {
+        background: #ff66cc;
+        width: 600px;
+        height: 600px;
+        top: 60%;
+        left: 60%;
+        animation-delay: 0s;
+      }
+
+      .blob3 {
+        background: #6699ff;
+        width: 450px;
+        height: 450px;
+        top: 30%;
+        left: 40%;
+        animation-delay: 0s;
+      }
+      .blob4 {
+        background: #ffcc00;
+        width: 400px;
+        height: 400px;
+        top: 80%;
+        left: 10%;
+        animation-delay: 25s;
+      }
+
+      .blob5 {
+        background: #cc00ff;
+        width: 500px;
+        height: 500px;
+        top: 20%;
+        left: 80%;
+        animation-delay: 40s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-80px, 60px) scale(1.2);
+        }
+      }
     </style>
   </head>
   <body>
+    <div class="blob-container">
+      <div class="blob blob1"></div>
+      <div class="blob blob2"></div>
+      <div class="blob blob3"></div>
+      <div class="blob blob4"></div>
+      <div class="blob blob5"></div>
+    </div>
+
     <div class="typewriter-container" id="container">
       <div class="paragraph">
         <span id="typewriter-text"></span><span class="blinking-cursor">|</span>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const blobs = document.querySelectorAll(".blob");
+
+        blobs.forEach((blob) => {
+          const top = Math.floor(Math.random() * 80); // 0–80%
+          const left = Math.floor(Math.random() * 80); // 0–80%
+          blob.style.top = `${top}%`;
+          blob.style.left = `${left}%`;
+        });
+      });
+    </script>
 
     <script>
       const rawText =
@@ -86,20 +191,53 @@
       const maxParagraphs = 10;
       const words = rawText.split(":").filter(Boolean);
 
+      const colorPalette = [
+        "#00ff00", // bright green
+        "#ffcc00", // yellow
+        "#ff6666", // red
+        "#00ffff", // cyan
+        "#ff66ff", // magenta
+        "#999999", // gray
+        "#66b2ff", // blue
+        "#ffffff", // fallback white
+      ];
+
       function delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // Returns a span with the given color
+      function createColorSpan(color) {
+        const span = document.createElement("span");
+        span.style.color = color;
+        return span;
       }
 
       async function typeParagraph(wordArray, paragraphElement) {
         for (let i = 0; i < wordArray.length; i++) {
           const word = wordArray[i];
+          const color =
+            Math.random() > 0.5
+              ? colorPalette[Math.floor(Math.random() * colorPalette.length)]
+              : null;
+
+          const span = color
+            ? createColorSpan(color)
+            : document.createElement("span");
+
+          // Add each character one at a time
           for (let j = 0; j < word.length; j++) {
-            paragraphElement.textContent += word[j];
+            const char = document.createTextNode(word[j]);
+            span.appendChild(char);
+            paragraphElement.appendChild(span.cloneNode(true)); // clone and update
+            span.removeChild(char); // remove to avoid repetition
             await delay(30);
           }
 
+          // Add colon after word
           if (i < wordArray.length - 1) {
-            paragraphElement.textContent += ":";
+            const colon = document.createTextNode(":");
+            paragraphElement.appendChild(colon);
             await delay(150);
           }
         }
