@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About</title>
+
+    <!-- JetBrains Mono Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: transparent;
+        color: white;
+        font-family: "JetBrains Mono", monospace;
+        background-color: #0a0a0a;
+      }
+
+      .typewriter-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 2rem;
+        box-sizing: border-box;
+        max-width: 800px;
+        width: 100%;
+        margin: auto;
+        height: 100vh;
+        overflow-y: auto;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        word-break: break-word;
+      }
+
+      .paragraph {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+
+      .blinking-cursor {
+        display: inline-block;
+        width: 1ch;
+        animation: blink 1s steps(2, start) infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .typewriter-container {
+          font-size: 0.95rem;
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="typewriter-container" id="container">
+      <div class="paragraph">
+        <span id="typewriter-text"></span><span class="blinking-cursor">|</span>
+      </div>
+    </div>
+
+    <script>
+      const rawText =
+        ":E.JamesMeeker:BornJanuaryNinthNinteenNinetyNine:NorthWestHospital:SeattleWashington:10:23am:EarlyLife:SouthEastIdaho:CurrentResidence:BoiseIdaho:GraduatedMadisonHighSchool:RexburgIdaho:2017:PlannedGraduation:BoiseStateUniversity:2025(?):SoloExhibitions:2024:DismantleInternalStructures:AIStudios:BoiseIdaho:GroupExhibitions:2024:AIStudiosTreefortShowcase:BoiseIdaho:Collections(none):Grants:(none):Publications:2024:DismantleInternalStructures:EditionofFourty:SelfPublished:2025:PartandParcel:Editionof(?):SelfPublished:Contact:ejamesmeeker@gmail.com";
+
+      const container = document.getElementById("container");
+      let paragraphCount = 0;
+      const maxParagraphs = 10;
+      const words = rawText.split(":").filter(Boolean);
+
+      function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function typeParagraph(wordArray, paragraphElement) {
+        for (let i = 0; i < wordArray.length; i++) {
+          const word = wordArray[i];
+          for (let j = 0; j < word.length; j++) {
+            paragraphElement.textContent += word[j];
+            await delay(30);
+          }
+
+          if (i < wordArray.length - 1) {
+            paragraphElement.textContent += ":";
+            await delay(150);
+          }
+        }
+      }
+
+      async function typeLoop() {
+        while (paragraphCount < maxParagraphs) {
+          const newPara = document.createElement("div");
+          newPara.className = "paragraph";
+
+          const span = document.createElement("span");
+          span.id = "typewriter-text-" + paragraphCount;
+          newPara.appendChild(span);
+
+          const cursor = document.createElement("span");
+          cursor.className = "blinking-cursor";
+          cursor.textContent = "|";
+          newPara.appendChild(cursor);
+
+          container.appendChild(newPara);
+
+          await typeParagraph(words, span);
+          paragraphCount++;
+          await delay(1000);
+        }
+      }
+
+      typeLoop();
+    </script>
+  </body>
+</html>
