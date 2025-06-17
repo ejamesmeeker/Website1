@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transition</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        height: 100dvh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 100dvh;
+        width: auto;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="JS/fade.js"></script>
+    <video id="transitionVideo" autoplay muted playsinline>
+      <source src="Assets/video/webTransition1.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <script>
+      const video = document.getElementById("transitionVideo");
+
+      video.addEventListener("ended", () => {
+        window.location.href = "scene1.html"; // <-- change this to your target page
+      });
+    </script>
+  </body>
+</html>
