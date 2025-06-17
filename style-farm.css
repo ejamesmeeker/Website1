@@ -124,11 +124,16 @@ body, html {
 }
 
 
-h1,a {
+h1 {
     color: #fff;
     margin: 2rem;
     font-size: 40px;
     letter-spacing: 100px;
+}
+
+a{
+  margin: 3rem;
+  font-size: 50px;
 }
 
 a:hover {
@@ -142,7 +147,7 @@ a:hover {
   top: 10rem;
   width: 100vw;
   height: 100vh;
-  z-index: 5000;
+  z-index: 50;
 }
 
 .character {
@@ -151,6 +156,13 @@ a:hover {
   height: 100px;
   pointer-events: none;
   image-rendering: pixelated; /* if it's a pixel-style GIF */
+}
+
+#monolith {
+  position: absolute;
+  top: 20rem;
+  left: 12rem;
+  z-index: 60;
 }
 
 .trail {
