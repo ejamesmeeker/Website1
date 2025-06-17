@@ -146,18 +146,20 @@ a:hover {
 }
 
 .welcome {
-  color: grey;
+  color: #fff;
   text-decoration: line-through;
-  text-decoration-color: rgba(255, 50, 50, .25);
+  text-decoration-color: rgba(255, 50, 50, .50);
   text-decoration-thickness: 5px;
-  background: rgba(50, 50, 50, .3);
-  border: solid 2px rgba(100, 100, 100, .2);
-  border-radius: 10px;
+  background-color: rgba(0, 0, 50, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: solid 1px rgba(100, 100, 100, .2);
+  border-radius: 5px;
   width: 7rem;
-  height: 5rem;
+  height: 20rem;
   margin: 1rem;
   text-align: center;
-  font-size: small;
+  font-size: 55px;
 }
 
 .title {
