@@ -18,8 +18,8 @@ body, html {
   will-change: transform;
   /* Remove transition for smoother, frame-by-frame updates */
   /* transition: transform 0.1s ease-out; */
-  width: 5000px; /* ensure container is sized to content */
-  height: 3000px;
+  width: 1000px; /* ensure container is sized to content */
+  height: 1000px;
   outline: 1px solid lime;
   background-image: url(Assets/Images/PoolTable.jpg);
 }
@@ -124,6 +124,15 @@ body, html {
 }
 
 
-h1 {
+h1,a {
     color: #fff;
+    margin: 2rem;
+    font-size: 40px;
+    letter-spacing: 100px;
+}
+
+a:hover {
+  color: tomato;
+  background: dodgerblue;
+  border-radius: 5px;
 }
