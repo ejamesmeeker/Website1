@@ -5,16 +5,27 @@ const dialogueText = document.getElementById("dialogue-text");
 const clickPrompt = document.getElementById("click-prompt");
 
 let isTyping = false;
-let currentDialogue = "";
 let charIndex = 0;
-let onComplete = null;
+let currentDialogue = "";
+let lines = [];
+let lineIndex = 0;
 
-function typeWriter(text, callback) {
+// Dialogue data
+const dialogueData = {
+  "hello-farmer": [
+    "Hello there!",
+    "Welcome to the farm.",
+    "Feel free to explore around."
+  ],
+  // Add more as needed...
+};
+
+function typeWriter(text) {
   isTyping = true;
   currentDialogue = text;
   charIndex = 0;
   dialogueText.innerHTML = "";
-  onComplete = callback;
+  clickPrompt.style.display = "none";
   dialogueBox.classList.remove("hidden");
 
   requestAnimationFrame(typeNextChar);
@@ -24,10 +35,21 @@ function typeNextChar() {
   if (charIndex < currentDialogue.length) {
     dialogueText.innerHTML += currentDialogue.charAt(charIndex);
     charIndex++;
-    setTimeout(() => requestAnimationFrame(typeNextChar), 30); // pace: 30ms per character
+    setTimeout(() => requestAnimationFrame(typeNextChar), 30);
   } else {
     isTyping = false;
     clickPrompt.style.display = "block";
+  }
+}
+
+function advanceDialogue() {
+  if (isTyping) return;
+
+  lineIndex++;
+  if (lineIndex < lines.length) {
+    typeWriter(lines[lineIndex]);
+  } else {
+    hideDialogue();
   }
 }
 
@@ -35,42 +57,30 @@ function hideDialogue() {
   dialogueBox.classList.add("hidden");
   dialogueText.innerHTML = "";
   clickPrompt.style.display = "none";
+  lines = [];
+  lineIndex = 0;
 }
 
-// Listen for user click to continue
-dialogueBox.addEventListener("click", () => {
-  if (!isTyping && onComplete) {
-    onComplete();
-    hideDialogue();
-  }
+// Click to continue
+document.addEventListener("click", () => {
+  if (dialogueBox.classList.contains("hidden")) return;
+  advanceDialogue();
 });
 
-// Public API to trigger dialogue
-function showDialogue(text, callback) {
-  clickPrompt.style.display = "none";
-  typeWriter(text, callback);
-}
 
-function showDialogueSequence(lines, finalCallback) {
-  let index = 0;
-
-  function next() {
-    if (index < lines.length) {
-      showDialogue(lines[index], next);
-      index++;
-    } else if (finalCallback) {
-      finalCallback();
-    }
+// External call to trigger dialogue
+window.showDialogue = (id) => {
+  const found = dialogueData[id];
+  if (!found) {
+    console.warn(`No dialogue found for id: ${id}`);
+    return;
   }
 
-  next();
-}
+  lines = found;
+  lineIndex = 0;
+  typeWriter(lines[lineIndex]);
+};
 
 
-showDialogueSequence([
-  "Hello there!",
-  "Welcome to the farm.",
-  "Feel free to explore around."
-]);
 
 
