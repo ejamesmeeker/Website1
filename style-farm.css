@@ -144,7 +144,8 @@ a:hover {
 
 #swarm-container {
   position: relative;
-  top: 10rem;
+  top: 3rem;
+  right: 5rem;
   width: 100vw;
   height: 100vh;
   z-index: 50;
@@ -160,15 +161,15 @@ a:hover {
 
 #monolith {
   position: absolute;
-  top: 20rem;
-  left: 12rem;
+  top: 10rem;
+  left: 5rem;
   z-index: 60;
 }
 
 #balloon {
   position: absolute;
-  top: 30rem;
-  left: 20rem;
+  top: 20rem;
+  left: 10rem;
   z-index: 65;
 }
 
