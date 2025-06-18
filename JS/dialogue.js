@@ -13,9 +13,17 @@ let lineIndex = 0;
 // Dialogue data
 const dialogueData = {
   "hello-farmer": [
-    "Hello there!",
+    "Hello farmer!",
     "Welcome to the farm.",
-    "Feel free to explore around."
+    "Feel free to.....",
+    "Touch nothing. Or touch everything. It amounts to the same...",
+    "The cows dream",
+    "maybe one day they they will dream of open skies",
+    "if not today, then tomorrow",
+    "anyways,",
+    "we're performing maintenance on some of the gates.",
+    "come back when they're open please.",
+    "have a nice day."
   ],
   // Add more as needed...
 };

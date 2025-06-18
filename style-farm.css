@@ -18,7 +18,7 @@ body, html {
   will-change: transform;
   /* Remove transition for smoother, frame-by-frame updates */
   /* transition: transform 0.1s ease-out; */
-  width: 1000px; /* ensure container is sized to content */
+  width: 1500px; /* ensure container is sized to content */
   height: 1000px;
   outline: 1px solid lime;
   background-image: url(Assets/Images/PoolTable.jpg);
@@ -38,8 +38,8 @@ body, html {
 }
 
 .collision-trigger {
-  background: rgba(0, 255, 0, 0.2);
-  border: 1px solid lime;
+  background: rgba(0, 0, 100, 0.1);
+  border: 1px solid rgba(50, 50, 50, .5);
 }
 
 
@@ -128,12 +128,13 @@ h1 {
     color: #fff;
     margin: 2rem;
     font-size: 40px;
-    letter-spacing: 100px;
+    letter-spacing: 50px;
 }
 
 a{
-  margin: 3rem;
-  font-size: 50px;
+  margin: 20px;
+  font-size: 20px;
+  padding: 1rem;
 }
 
 a:hover {
@@ -143,9 +144,9 @@ a:hover {
 }
 
 #swarm-container {
-  position: relative;
-  top: 3rem;
-  right: 5rem;
+  position: absolute;
+  top: 200px;
+  right: 100px;
   width: 100vw;
   height: 100vh;
   z-index: 50;
@@ -161,15 +162,15 @@ a:hover {
 
 #monolith {
   position: absolute;
-  top: 10rem;
+  top: 400px;
   left: 5rem;
   z-index: 60;
 }
 
 #balloon {
   position: absolute;
-  top: 20rem;
-  left: 10rem;
+  top: 500px;
+  left: 200px;
   z-index: 65;
 }
 
@@ -193,19 +194,21 @@ a:hover {
   bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 80%;
-  background: rgba(0, 0, 0, 0.8);
-  color: #eee;
+  max-width: 100%;
+   background-color: rgba(0, 0, 50, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
   padding: 20px;
-  border: 2px solid #555;
+  border: 1px solid #555;
   font-family: monospace;
-  font-size: 1.2rem;
+  font-size: 20px;
   z-index: 9999;
 }
 
 #click-prompt {
   margin-top: 10px;
-  font-size: 0.9rem;
+  font-size: 10px;
   color: #aaa;
   opacity: 0.7;
 }

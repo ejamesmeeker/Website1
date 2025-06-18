@@ -146,17 +146,15 @@ a:hover {
 }
 
 .welcome {
-  color: #fff;
+  color: rgb(221, 219, 109);
   text-decoration: line-through;
   text-decoration-color: rgba(255, 50, 50, .50);
-  text-decoration-thickness: 5px;
-  background-color: rgba(0, 0, 50, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  text-decoration-thickness: 2 px;
+  background-color: rgba(0, 0, 50, 0.1);
   border: solid 1px rgba(100, 100, 100, .2);
-  border-radius: 5px;
+  border-radius: 2px;
   width: 7rem;
-  height: 20rem;
+  height: 15rem;
   margin: 1rem;
   text-align: center;
   font-size: 55px;

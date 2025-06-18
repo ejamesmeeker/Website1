@@ -3,7 +3,7 @@ const layerData = [
   {
     src: "Assets/Images/scene1/beach.png",
     x: -200,
-    y: 10,
+    y: 100,
     z: 1,
     parallax: .9,
     reverse: true,
@@ -13,7 +13,7 @@ const layerData = [
   {
     src: "Assets/Images/scene1/beach.png",
     x: -200,
-    y: 30,
+    y: 150,
     z: 1,
     parallax: .9,
     reverse: true,
@@ -23,7 +23,7 @@ const layerData = [
   {
     src: "Assets/Images/scene1/beach.png",
     x: -200,
-    y: 50,
+    y: 200,
     z: 1,
     parallax: .9,
     reverse: true,
