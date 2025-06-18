@@ -57,6 +57,10 @@
       <img src="Assets/Images/scene1/monolith.png" alt="monolith" />
     </div>
 
+    <div id="balloon" class="floating">
+      <img src="Assets/Images/scene1/balloon.png" alt="balloon head" />
+    </div>
+
     <div id="bg-blend-layer"></div>
 
     <div id="gallery-window" class="gallery-hidden">
@@ -64,6 +68,17 @@
       <div class="slideshow">
         <img id="gallery-image" src="" alt="Slideshow" />
       </div>
+    </div>
+
+    <div
+      class="collision-trigger"
+      data-dialogue="hello-farmer"
+      style="left: 100px; top: 100px"
+    ></div>
+
+    <div id="dialogue-box" class="hidden">
+      <div id="dialogue-text"></div>
+      <div id="click-prompt">[ click to continue ]</div>
     </div>
 
     <audio id="bg-music" autoplay loop>
@@ -77,5 +92,6 @@
     <script src="JS/scene1-layers.js"></script>
     <script src="JS/backgroundscroll.js"></script>
     <script src="JS/swarm.js"></script>
+    <script src="JS/dialogue.js"></script>
   </body>
 </html>

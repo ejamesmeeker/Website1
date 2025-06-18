@@ -10,6 +10,26 @@ const layerData = [
     transformType: "scale",
     intensity: 10,
   },
+  {
+    src: "Assets/Images/scene1/beach.png",
+    x: -200,
+    y: 150,
+    z: 1,
+    parallax: .9,
+    reverse: true,
+    transformType: "scale",
+    intensity: 13,
+  },
+  {
+    src: "Assets/Images/scene1/beach.png",
+    x: -200,
+    y: 200,
+    z: 1,
+    parallax: .9,
+    reverse: true,
+    transformType: "scale",
+    intensity: 17,
+  },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {

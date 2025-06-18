@@ -165,6 +165,17 @@ a:hover {
   z-index: 60;
 }
 
+#balloon {
+  position: absolute;
+  top: 30rem;
+  left: 20rem;
+  z-index: 65;
+}
+
+#balloon img {
+  scale: 200%;
+}
+
 .trail {
   position: absolute;
   width: 50px;
@@ -176,6 +187,33 @@ a:hover {
   animation: fadeTrail 0.3s ease-out forwards;
 }
 
+#dialogue-box {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80%;
+  background: rgba(0, 0, 0, 0.8);
+  color: #eee;
+  padding: 20px;
+  border: 2px solid #555;
+  font-family: monospace;
+  font-size: 1.2rem;
+  z-index: 9999;
+}
+
+#click-prompt {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #aaa;
+  opacity: 0.7;
+}
+
+.hidden {
+  display: none;
+}
+
+
 @keyframes fadeTrail {
   from {
     opacity: 0.3;
@@ -184,3 +222,20 @@ a:hover {
     opacity: 0;
   }
 }
+
+@keyframes floatUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px); /* float up */
+  }
+  100% {
+    transform: translateY(0); /* back down */
+  }
+}
+
+.floating {
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+

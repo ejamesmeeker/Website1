@@ -227,6 +227,11 @@ mouseY = Math.min(window.innerHeight, Math.max(0, mouseY));
       const galleryId = trigger.getAttribute("data-gallery");
       if (galleryId) showGallery(galleryId);
 
+      const dialogueId = trigger.getAttribute("data-dialogue");
+      if (dialogueId) {
+        showDialogue(dialogueId); // This function will be in dialogue.js
+}
+
       const url = trigger.getAttribute("data-url");
       if (url && !hasOpenedUrl) {
         hasOpenedUrl = true;
