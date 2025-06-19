@@ -20,6 +20,7 @@ const dialogueData = {
     "The cows are dreaming",
     "maybe one day they they will dream of open skies",
     "if not today, then tomorrow",
+    "Please do not wake them",
     "anyways,",
     "we're performing maintenance on some of the gates.",
     "come back when they're open please.",
