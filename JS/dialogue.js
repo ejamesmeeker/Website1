@@ -27,7 +27,8 @@ const dialogueData = {
     "the monet exhibition is currently installed",
     "feel free to...",
     "take a look around.",
-    "entrance is to your right",
+    "entrance is to your right,",
+    "try knocking on the door.",
     "have a nice day."
   ],
   // Add more as needed...
