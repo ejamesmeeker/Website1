@@ -14,7 +14,7 @@ let lineIndex = 0;
 const dialogueData = {
   "hello-farmer": [
     "Hello farmer!",
-    "Welcome to the farm.",
+    "Welcome to your farm.",
     "Feel free to.....",
     "Touch nothing. Or touch everything....",
     "The cows are dreaming",
@@ -24,6 +24,10 @@ const dialogueData = {
     "anyways,",
     "we're performing maintenance on some of the gates.",
     "come back when they're open please.",
+    "the monet exhibition is currently installed",
+    "feel free to...",
+    "take a look around.",
+    "entrance is to your right",
     "have a nice day."
   ],
   // Add more as needed...

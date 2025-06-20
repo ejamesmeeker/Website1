@@ -191,7 +191,7 @@ a:hover {
 
 #dialogue-box {
   position: absolute;
-  bottom: 50px;
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
   max-width: 100%;

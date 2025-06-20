@@ -30,6 +30,16 @@ const layerData = [
     transformType: "scale",
     intensity: 17,
   },
+  {
+    src: "Assets/Images/scene1/outside.png",
+    x: 700,
+    y: 100,
+    z: 10,
+    parallax: .1,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
