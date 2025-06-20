@@ -24,67 +24,6 @@ body, html {
   background-image: url(Assets/Images/PoolTable.jpg);
 }
 
-.collision-wall,
-.collision-trigger {
-  position: absolute;
-  width: 500px;
-  height: 100px;
-  pointer-events: none;
-}
-
-.collision-wall {
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid red;
-}
-
-.collision-trigger {
-  background: rgba(0, 0, 100, 0.1);
-  border: 1px solid rgba(50, 50, 50, .5);
-}
-
-
-#gallery-window {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 400px;
-  transform: translate(-50%, -50%) scale(0.8);
-  background: rgba(20, 20, 20, 0.95);
-  border: 2px solid #fff;
-  padding: 20px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-#gallery-window.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-#gallery-window .slideshow img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-#close-gallery {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-}
 
 #toggle-music {
   position: fixed;
@@ -98,15 +37,6 @@ body, html {
   cursor: pointer;
 }
 
-.cow {
-  width: 64px;
-  height: 64px;
-  background-image: url("Assets/Images/Cow.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  position: absolute;
-}
 
 #bg-blend-layer {
   position: fixed;
@@ -169,8 +99,8 @@ a:hover {
 
 #balloon {
   position: absolute;
-  top: 500px;
-  left: 200px;
+  top: 50px;
+  left: 0px;
   z-index: 65;
 }
 
@@ -275,4 +205,3 @@ a:hover {
 .floating {
   animation: floatUpDown 3s ease-in-out infinite;
 }
-

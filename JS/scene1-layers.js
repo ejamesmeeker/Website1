@@ -61,6 +61,84 @@ const layerData = [
     transformType: "",
     intensity: 0,
   },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 800,
+    y: 450,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 900,
+    y: 450,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 700,
+    y: 500,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 800,
+    y: 550,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 900,
+    y: 600,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 1000,
+    y: 600,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+  },
+  {
+    src: "Assets/Images/scene1/statue.png",
+    x: 700,
+    y: 400,
+    z: 15,
+    width: 100,
+    parallax: .3,
+    reverse: true,
+    transformType: "",
+    intensity: 0,
+    link: "scene1-push.html"
+  },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -75,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     img.style.zIndex = layer.z;
     img.style.userSelect = "none";
     img.style.pointerEvents = layer.link ? "auto" : "none";
+    
 
     // Store parallax and transform data
     if (layer.intensity !== undefined) img.dataset.intensity = layer.intensity;
@@ -84,6 +163,10 @@ document.addEventListener("DOMContentLoaded", () => {
     img.dataset.parallax = layer.parallax !== undefined ? layer.parallax : false;
     img.dataset.transformType = layer.transformType || "translate";
 
+    if (layer.width) img.style.width = typeof layer.width === "number" ? `${layer.width}px` : layer.width;
+if (layer.height) img.style.height = typeof layer.height === "number" ? `${layer.height}px` : layer.height;
+
+
     // If the layer has a link, wrap it in an <a>
     if (layer.link) {
       const link = document.createElement("a");
@@ -92,6 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
       link.style.position = "absolute";
       link.style.display = "inline-block";
       link.style.zIndex = layer.z;
+
+// Match image dimensions if defined
+if (layer.width) link.style.width = typeof layer.width === "number" ? `${layer.width}px` : layer.width;
+if (layer.height) link.style.height = typeof layer.height === "number" ? `${layer.height}px` : layer.height;
+
       link.appendChild(img);
       link.classList.add("layer-link");
 
