@@ -217,6 +217,38 @@ a:hover {
   display: none;
 }
 
+.layer-link.hovered img {
+  filter: brightness(2) contrast(2);
+  transform: scale(1.5);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.layer-link {
+  position: absolute;
+}
+
+.layer-link::after {
+  content: "enter";
+  position: absolute;
+  top: 130px; /* Distance above the image */
+  left: 500px;
+  transform: translateX(-50%);
+  font-size: 20px;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.layer-link.hovered::after {
+  opacity: 1;
+}
+
+
 
 @keyframes fadeTrail {
   from {
