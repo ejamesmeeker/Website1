@@ -47,8 +47,13 @@
       <!-- trigger zone -->
       <h1>Farm</h1>
       <a href="index.html">back to home</a>
+      <div id="swarm-container"></div>
+      <div
+        class="collision-trigger"
+        data-dialogue="hello-farmer"
+        style="left: 10px; top: 550px; z-index: 50"
+      ></div>
     </div>
-    <div id="swarm-container"></div>
 
     <div id="cow"></div>
     <script src="JS/walk.js"></script>
@@ -69,12 +74,6 @@
         <img id="gallery-image" src="" alt="Slideshow" />
       </div>
     </div>
-
-    <div
-      class="collision-trigger"
-      data-dialogue="hello-farmer"
-      style="left: 175px; top: 550px"
-    ></div>
 
     <div id="dialogue-box" class="hidden">
       <div id="dialogue-text"></div>
