@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Three.js Gallery</title>
+    <title>THE ROOM</title>
     <style>
       body {
         margin: 0;
@@ -14,33 +14,45 @@
     </style>
   </head>
   <body>
-    <script type="module">
-      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-      import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+    <!-- Three.js and OrbitControls from CDNJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r134/examples/js/controls/OrbitControls.js"></script>
 
+    <script>
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
-        75,
+        150,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
       );
-      camera.position.set(0, 1.5, 5);
+      camera.position.set(0, 1.5, 7);
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      const renderer = new THREE.WebGLRenderer({ antialias: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      const controls = new OrbitControls(camera, renderer.domElement);
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
+
+      // Load texture for the room walls
+      const loader = new THREE.TextureLoader();
+      const roomTexture = loader.load(
+        "https://threejs.org/examples/textures/brick_diffuse.jpg"
+      );
+
+      const roomMaterial = new THREE.MeshBasicMaterial({
+        map: roomTexture,
+        side: THREE.BackSide,
+      });
 
       const room = new THREE.Mesh(
         new THREE.BoxGeometry(10, 3, 10),
-        new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.BackSide })
+        roomMaterial
       );
       scene.add(room);
 
-      const loader = new THREE.TextureLoader();
+      // Example artwork
       const artTexture = loader.load(
         "https://threejs.org/examples/textures/uv_grid_opengl.jpg"
       );
