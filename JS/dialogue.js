@@ -28,7 +28,7 @@ const dialogueData = {
     "feel free to...",
     "take a look around.",
     "entrance is to your right,",
-    "try knocking on the door.",
+    "through the grey building.",
     "have a nice day."
   ],
   // Add more as needed...
