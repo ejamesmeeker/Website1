@@ -33,10 +33,10 @@ const scene = new THREE.Scene();
 
       // Example artwork
       const artTexture = loader.load(
-        "https://threejs.org/examples/textures/uv_grid_opengl.jpg"
+        "Assets/Images/Cow.png"
       );
       const art = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.5, 1),
+        new THREE.PlaneGeometry(20, 6),
         new THREE.MeshBasicMaterial({ map: artTexture })
       );
       art.position.set(0, 1.5, -4.9);
