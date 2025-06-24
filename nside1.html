@@ -21,23 +21,29 @@
 
     <script>
       const audio = document.getElementById("bg-music");
-
+    
       function playAudioOnce() {
-        audio.play().catch((e) => {
-          console.log("Autoplay failed:", e);
-        });
-
-        // Remove listeners so it doesn't keep triggering
+        audio.play().catch((e) => console.log("Autoplay failed:", e));
+    
+        // Resume audio context safely
+        try {
+          if (window.audioContext && audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+        } catch (e) {
+          // audioContext might not be created yet, no problem
+        }
+    
         window.removeEventListener("click", playAudioOnce);
         window.removeEventListener("keydown", playAudioOnce);
         window.removeEventListener("touchstart", playAudioOnce);
       }
-
-      // Listen for first interaction
+    
       window.addEventListener("click", playAudioOnce);
       window.addEventListener("keydown", playAudioOnce);
       window.addEventListener("touchstart", playAudioOnce);
     </script>
+    
 
     <!-- Three.js and OrbitControls from CDNJS -->
     <script src="libs/three/three.min.js"></script>

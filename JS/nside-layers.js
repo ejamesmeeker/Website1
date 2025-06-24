@@ -13,6 +13,7 @@ const scene = new THREE.Scene();
 
       const controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
+      
 
     scene.background = new THREE.Color(0x000);
     scene.fog = new THREE.Fog(0x222233, 10, 20);
@@ -46,8 +47,18 @@ const scene = new THREE.Scene();
       art.position.set(0, 1.5, -4.9);
       scene.add(art);
 
-    const floatMaterial = new THREE.MeshStandardMaterial({ color: 0x88ccff });
-    const floatMesh = new THREE.Mesh(new THREE.SphereGeometry(0.4, 32, 32), floatMaterial);
+    // Load texture from your image path
+const loader2 = new THREE.TextureLoader();
+const imageTexture = loader.load("Assets/Images/beer.jpg"); // Change path to your image
+
+// Create a material with the texture
+const floatMaterial = new THREE.MeshStandardMaterial({
+  map: imageTexture,
+  roughness: 1,
+  metalness: 0.0,
+});
+
+    const floatMesh = new THREE.Mesh(new THREE.SphereGeometry(2, 64, 64), floatMaterial);
     floatMesh.position.set(1.5, 1.5, 0);
     scene.add(floatMesh);
 
@@ -63,7 +74,7 @@ const scene = new THREE.Scene();
     let clock = new THREE.Clock();
 
     // Create geometry for particles
-const particleCount = 500;
+const particleCount = 800;
 const particlesGeometry = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
 
@@ -86,15 +97,51 @@ const particlesMaterial = new THREE.PointsMaterial({
 const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
 scene.add(particleSystem);
 
+// Particle system already exists: `particleSystem` + `particlesMaterial`
+
+// MUSIC ANALYSIS SETUP
+let audioContext, analyser, dataArray;
+
+// Wait until audio is ready
+window.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("bg-music");
+  if (!audio) return;
+
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 64;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+  } catch (e) {
+    console.warn("Audio context setup failed:", e);
+  }
+});
+
 
 function animate() {
   requestAnimationFrame(animate);
   
   const t = clock.getElapsedTime();
-  floatMesh.position.y = 1.5 + Math.sin(t * 2) * 0.2; // Float up and down
+  floatMesh.position.x = 1.5 + Math.sin(t * .2) * 20; // Float up and down
+  floatMesh.position.z = 3 + Math.sin(t * .5) * 20;
 
   particleSystem.rotation.y = t * 0.02;
   particleSystem.rotation.x = Math.sin(t * 0.1) * 0.01;
+
+  // Inside animate() loop, after your existing logic
+if (analyser && dataArray) {
+    analyser.getByteFrequencyData(dataArray);
+    let sum = 0;
+    for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+    const average = sum / dataArray.length;
+    const normalized = average / 255;
+    particlesMaterial.opacity = 0.1 + normalized * 1;
+  }
+  
 
   controls.update();
   renderer.render(scene, camera);
