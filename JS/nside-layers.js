@@ -207,8 +207,6 @@ if (analyser && dataArray) {
   }
 
 
-  
-
   controls.update();
   renderer.render(scene, camera);
 }
