@@ -14,41 +14,80 @@
     </style>
   </head>
   <body>
+    <!-- Background music, hidden -->
     <audio id="bg-music" style="display: none">
       <source src="Assets/Audio/bossa.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
+    <!-- Optional audio toggle button (add it if you want manual control) -->
+    <!-- <button id="audio-toggle" style="position: absolute; z-index: 10;">🔇</button> -->
+
     <script>
-      const audio = document.getElementById("bg-music");
+      window.addEventListener("DOMContentLoaded", () => {
+        const music = document.getElementById("bg-music");
+        const toggle = document.getElementById("audio-toggle");
     
-      function playAudioOnce() {
-        audio.play().catch((e) => console.log("Autoplay failed:", e));
+        if (!music) return;
     
-        // Resume audio context safely
-        try {
-          if (window.audioContext && audioContext.state === "suspended") {
-            audioContext.resume();
-          }
-        } catch (e) {
-          // audioContext might not be created yet, no problem
+        // Set music to start at a random position once metadata is loaded
+        music.addEventListener("loadedmetadata", () => {
+          music.currentTime = Math.random() * music.duration;
+        });
+    
+        // Optional toggle button play/pause
+        if (toggle) {
+          toggle.addEventListener("click", () => {
+            if (music.paused) {
+              music.play()
+                .then(() => toggle.textContent = "🔊")
+                .catch(console.warn);
+            } else {
+              music.pause();
+              toggle.textContent = "🔇";
+            }
+          });
         }
     
-        window.removeEventListener("click", playAudioOnce);
-        window.removeEventListener("keydown", playAudioOnce);
-        window.removeEventListener("touchstart", playAudioOnce);
-      }
+        // Unlock audio on first user interaction
+        const tryPlayMusicOnce = () => {
+          if (music.paused) {
+            music.play()
+              .then(() => {
+                if (toggle) toggle.textContent = "🔊";
+              })
+              .catch(console.warn);
+          }
     
-      window.addEventListener("click", playAudioOnce);
-      window.addEventListener("keydown", playAudioOnce);
-      window.addEventListener("touchstart", playAudioOnce);
+          try {
+            if (!window.audioContext) {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              window.audioContext = ctx;
+              if (ctx.state === "suspended") {
+                ctx.resume();
+              }
+            }
+          } catch (err) {
+            console.warn("AudioContext setup failed:", err);
+          }
+    
+          // Remove these listeners after the first interaction
+          document.removeEventListener("click", tryPlayMusicOnce);
+          document.removeEventListener("keydown", tryPlayMusicOnce);
+          document.removeEventListener("touchstart", tryPlayMusicOnce);
+        };
+    
+        // Add interaction listeners to unlock audio
+        document.addEventListener("click", tryPlayMusicOnce);
+        document.addEventListener("keydown", tryPlayMusicOnce);
+        document.addEventListener("touchstart", tryPlayMusicOnce);
+      });
     </script>
     
 
-    <!-- Three.js and OrbitControls from CDNJS -->
+    <!-- Your Three.js libraries -->
     <script src="libs/three/three.min.js"></script>
     <script src="libs/three/orbit-controls.js"></script>
-
     <script src="JS/nside-layers.js"></script>
   </body>
 </html>

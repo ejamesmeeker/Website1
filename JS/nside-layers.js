@@ -100,26 +100,52 @@ scene.add(particleSystem);
 // Particle system already exists: `particleSystem` + `particlesMaterial`
 
 // MUSIC ANALYSIS SETUP
-let audioContext, analyser, dataArray;
+// === MUSIC ANALYSIS SHARED SETUP ===
+let analyser, dataArray;
 
-// Wait until audio is ready
-window.addEventListener("DOMContentLoaded", () => {
+function setupAudioAnalyser() {
   const audio = document.getElementById("bg-music");
-  if (!audio) return;
+  const context = window.audioContext;
+
+  if (!audio || !context || analyser) return;
 
   try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
+    analyser = context.createAnalyser();
     analyser.fftSize = 64;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-    const source = audioContext.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
+    // Only create source if it doesn't already exist
+    if (!window.audioSource) {
+      const source = context.createMediaElementSource(audio);
+      source.connect(analyser);
+      analyser.connect(context.destination);
+      window.audioSource = source;
+    }
   } catch (e) {
-    console.warn("Audio context setup failed:", e);
+    console.warn("Audio analyser setup failed:", e);
+  }
+}
+
+// Wait until window.audioContext is ready (from your HTML interaction unlock)
+window.addEventListener("load", () => {
+  if (window.audioContext) {
+    setupAudioAnalyser();
+  } else {
+    // Fallback in case user hasn't clicked yet
+    const trySetup = () => {
+      if (window.audioContext) {
+        setupAudioAnalyser();
+        document.removeEventListener("click", trySetup);
+        document.removeEventListener("keydown", trySetup);
+        document.removeEventListener("touchstart", trySetup);
+      }
+    };
+    document.addEventListener("click", trySetup);
+    document.addEventListener("keydown", trySetup);
+    document.addEventListener("touchstart", trySetup);
   }
 });
+
 
 
 function animate() {
