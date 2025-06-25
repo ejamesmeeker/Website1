@@ -30,18 +30,16 @@
     
         if (!music) return;
     
-        // Set music to start at a random position once metadata is loaded
+        // Start at random position (once metadata is available)
         music.addEventListener("loadedmetadata", () => {
           music.currentTime = Math.random() * music.duration;
         });
     
-        // Optional toggle button play/pause
+        // Optional toggle button
         if (toggle) {
           toggle.addEventListener("click", () => {
             if (music.paused) {
-              music.play()
-                .then(() => toggle.textContent = "🔊")
-                .catch(console.warn);
+              music.play().then(() => toggle.textContent = "🔊").catch(console.warn);
             } else {
               music.pause();
               toggle.textContent = "🔇";
@@ -49,40 +47,38 @@
           });
         }
     
-        // Unlock audio on first user interaction
-        const tryPlayMusicOnce = () => {
+        // === USER GESTURE NEEDED ===
+        const unlockAudio = () => {
+          // Create audio context if needed
+          if (!window.audioContext) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            window.audioContext = ctx;
+          }
+    
+          const ctx = window.audioContext;
+    
+          // Resume context if suspended
+          if (ctx.state === "suspended") {
+            ctx.resume();
+          }
+    
+          // Play the music
           if (music.paused) {
-            music.play()
-              .then(() => {
-                if (toggle) toggle.textContent = "🔊";
-              })
-              .catch(console.warn);
+            music.play().then(() => {
+              if (toggle) toggle.textContent = "🔊";
+            }).catch(console.warn);
           }
     
-          try {
-            if (!window.audioContext) {
-              const ctx = new (window.AudioContext || window.webkitAudioContext)();
-              window.audioContext = ctx;
-              if (ctx.state === "suspended") {
-                ctx.resume();
-              }
-            }
-          } catch (err) {
-            console.warn("AudioContext setup failed:", err);
-          }
-    
-          // Remove these listeners after the first interaction
-          document.removeEventListener("click", tryPlayMusicOnce);
-          document.removeEventListener("keydown", tryPlayMusicOnce);
-          document.removeEventListener("touchstart", tryPlayMusicOnce);
+          // Remove listeners after first gesture
+          document.removeEventListener("click", unlockAudio);
+          document.removeEventListener("touchstart", unlockAudio);
         };
     
-        // Add interaction listeners to unlock audio
-        document.addEventListener("click", tryPlayMusicOnce);
-        document.addEventListener("keydown", tryPlayMusicOnce);
-        document.addEventListener("touchstart", tryPlayMusicOnce);
+        document.addEventListener("click", unlockAudio);
+        document.addEventListener("touchstart", unlockAudio);
       });
     </script>
+    
     
 
     <!-- Your Three.js libraries -->
