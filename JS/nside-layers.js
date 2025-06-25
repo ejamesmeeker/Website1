@@ -31,7 +31,7 @@ const scene = new THREE.Scene();
       });
 
       const room = new THREE.Mesh(
-        new THREE.BoxGeometry(10, 3, 10),
+        new THREE.BoxGeometry(5, 30, 5),
         roomMaterial
       );
       scene.add(room);
@@ -47,6 +47,18 @@ const scene = new THREE.Scene();
       art.position.set(0, 1.5, -4.9);
       scene.add(art);
 
+      // PLane 2
+      const artTexture2 = loader.load(
+        "Assets/Images/art/dis1.jpg"
+      );
+      const art2 = new THREE.Mesh(
+        new THREE.PlaneGeometry(6, 9),
+        new THREE.MeshBasicMaterial({ map: artTexture2 })
+      );
+      art2.position.set(0, 2, -4.9);
+      scene.add(art2);
+
+
     // Load texture from your image path
 const loader2 = new THREE.TextureLoader();
 const imageTexture = loader.load("Assets/Images/beer.jpg"); // Change path to your image
@@ -61,6 +73,19 @@ const floatMaterial = new THREE.MeshStandardMaterial({
     const floatMesh = new THREE.Mesh(new THREE.SphereGeometry(2, 64, 64), floatMaterial);
     floatMesh.position.set(1.5, 1.5, 0);
     scene.add(floatMesh);
+
+    // Create a wireframe sphere around the floatMesh
+const wireframeGeometry = new THREE.SphereGeometry(40, 32, 32); // slightly larger radius
+const wireframeMaterial = new THREE.MeshBasicMaterial({
+  color: 0xffffff,
+  wireframe: true,
+  transparent: true,
+  opacity: 0.3,
+});
+const wireframeSphere = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
+wireframeSphere.position.copy(floatMesh.position); // match position
+scene.add(wireframeSphere);
+
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -87,7 +112,7 @@ particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 
 // Material for particles
 const particlesMaterial = new THREE.PointsMaterial({
   color: 0xffffff,
-  size: 0.01,
+  size: 0.03,
   transparent: true,
   opacity: 0.6,
   depthWrite: false, // lets particles glow through each other
