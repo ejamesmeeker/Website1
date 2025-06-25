@@ -111,16 +111,27 @@ particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 
 
 // Material for particles
 const particlesMaterial = new THREE.PointsMaterial({
-  color: 0xffffff,
-  size: 0.03,
-  transparent: true,
-  opacity: 0.6,
-  depthWrite: false, // lets particles glow through each other
-});
+    size: 0.03,
+    transparent: true,
+    opacity: 0.6,
+    vertexColors: true, // Enable per-particle color
+    depthWrite: false,
+  });
+  
 
 // Create particle cloud
 const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
 scene.add(particleSystem);
+
+// Color attribute: set once
+const colors = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount; i++) {
+  colors[i * 3 + 0] = Math.random();
+  colors[i * 3 + 1] = Math.random();
+  colors[i * 3 + 2] = Math.random();
+}
+particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
 
 // Particle system already exists: `particleSystem` + `particlesMaterial`
 
@@ -181,7 +192,8 @@ function animate() {
   floatMesh.position.z = 3 + Math.sin(t * .5) * 20;
 
   particleSystem.rotation.y = t * 0.02;
-  particleSystem.rotation.x = Math.sin(t * 0.1) * 0.01;
+  particleSystem.rotation.x = Math.sin(t * 0.1) * 0.1;
+
 
   // Inside animate() loop, after your existing logic
 if (analyser && dataArray) {
@@ -190,8 +202,11 @@ if (analyser && dataArray) {
     for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
     const average = sum / dataArray.length;
     const normalized = average / 255;
-    particlesMaterial.opacity = 0.1 + normalized * 1;
+    particlesMaterial.size = 0.01 + normalized * 0.3; // Adjust range as needed
+
   }
+
+
   
 
   controls.update();
