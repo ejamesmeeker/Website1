@@ -18,6 +18,21 @@ const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000);
     scene.fog = new THREE.Fog(0x222233, 10, 20);
 
+const loader3 = new THREE.OBJLoader();
+
+loader3.load('Assets/3d/form1.obj', (obj) => {
+  obj.traverse((child) => {
+    if (child.isMesh) {
+      child.material = new THREE.MeshBasicMaterial({
+        color: 0xd12a2a,
+        wireframe: true,
+      });
+    }
+  });
+  obj.position.set(0, 0, 0);
+  scene.add(obj);
+});
+
 
 
       // Load texture for the room walls
