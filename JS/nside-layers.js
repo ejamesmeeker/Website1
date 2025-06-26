@@ -19,6 +19,7 @@ const scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x222233, 10, 20);
 
 
+
       // Load texture for the room walls
       const loader = new THREE.TextureLoader();
       const roomTexture = loader.load(
@@ -85,8 +86,6 @@ const wireframeMaterial = new THREE.MeshBasicMaterial({
 const wireframeSphere = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
 wireframeSphere.position.copy(floatMesh.position); // match position
 scene.add(wireframeSphere);
-
-
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
