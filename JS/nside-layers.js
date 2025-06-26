@@ -6,13 +6,34 @@ const scene = new THREE.Scene();
         1000
       );
       camera.position.set(0, 1.5, 7);
+      
 
-      const renderer = new THREE.WebGLRenderer({ antialias: false });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+      const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true, });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.autoClear = false;         // ✅ already in animate()
+renderer.autoClearColor = false;    // ✅ prevents background wipe
+renderer.setClearColor(0x000000, 0); // ✅ transparent black
+document.body.appendChild(renderer.domElement);
+
+
 
       const controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
+
+      const afterimageScene = new THREE.Scene();
+const afterimageCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const fadeMaterial = new THREE.MeshBasicMaterial({
+  color: 0xa19d32,
+  transparent: true,
+  opacity: 0.06 // Lower = longer trails
+});
+const fadePlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(2, 2),
+  fadeMaterial
+);
+afterimageScene.add(fadePlane);
+
+      
       
 
     scene.background = new THREE.Color(0x000);
@@ -33,6 +54,22 @@ loader3.load('Assets/3d/form1.obj', (obj) => {
   scene.add(obj);
 });
 
+const loader4 = new THREE.OBJLoader();
+
+loader3.load('Assets/3d/business.obj', (obj) => {
+  obj.traverse((child) => {
+    if (child.isMesh) {
+      child.material = new THREE.MeshBasicMaterial({
+        color: 0xfff,
+        wireframe: true,
+      });
+    }
+  });
+  obj.scale.set(2,2,2);
+  obj.position.set(0, 0, 10);
+  scene.add(obj);
+});
+
 
 
       // Load texture for the room walls
@@ -50,7 +87,15 @@ loader3.load('Assets/3d/form1.obj', (obj) => {
         new THREE.BoxGeometry(5, 30, 5),
         roomMaterial
       );
+      room.position.set(-5,-5,-5)
       scene.add(room);
+
+      const mirroredRoom = room.clone();
+mirroredRoom.scale.x *= -.1;
+mirroredRoom.scale.y *= -.1; // Flip horizontally
+mirroredRoom.position.x *= -1; // Mirror position
+scene.add(mirroredRoom);
+
 
       // Example artwork
       const artTexture = loader.load(
@@ -102,10 +147,42 @@ const wireframeSphere = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
 wireframeSphere.position.copy(floatMesh.position); // match position
 scene.add(wireframeSphere);
 
+const beamGeometry = new THREE.ConeGeometry(6, 75, 64, 1, true);
+const beamMaterial = new THREE.MeshBasicMaterial({
+  color: 0x6ab7cc,
+  transparent: true,
+  opacity: 0.5,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+});
+const beam = new THREE.Mesh(beamGeometry, beamMaterial);
+beam.position.set(15, -5, 10);
+beam.rotation.x = Math.PI;
+scene.add(beam);
+
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = 3000;
+canvas.height = 520;
+
+ctx.fillStyle = "#fff";
+ctx.font = "150px serif";
+ctx.fillText("DO NOT TRUST THE SPHERE", 60, 164);
+
+const texture = new THREE.CanvasTexture(canvas);
+const textMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(16, 4),
+  new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+);
+textMesh.position.set(-10, 5, 0);
+scene.add(textMesh);
+
+
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
 
@@ -200,31 +277,35 @@ window.addEventListener("load", () => {
 
 function animate() {
   requestAnimationFrame(animate);
-  
+
   const t = clock.getElapsedTime();
-  floatMesh.position.x = 1.5 + Math.sin(t * .2) * 20; // Float up and down
-  floatMesh.position.z = 3 + Math.sin(t * .5) * 20;
+  
+  floatMesh.position.x = 1.5 + Math.sin(t * 0.2) * 20;
+  floatMesh.position.z = 3 + Math.sin(t * 0.5) * 20;
 
   particleSystem.rotation.y = t * 0.02;
   particleSystem.rotation.x = Math.sin(t * 0.1) * 0.1;
 
-
-  // Inside animate() loop, after your existing logic
-if (window.analyser && window.dataArray) {
-  window.analyser.getByteFrequencyData(window.dataArray);
-  let sum = 0;
-  for (let i = 0; i < window.dataArray.length; i++) sum += window.dataArray[i];
-  const average = sum / window.dataArray.length;
-  const normalized = average / 255;
-  particlesMaterial.size = 0.01 + normalized * 0.3;
-}
-
-
+  if (window.analyser && window.dataArray) {
+    window.analyser.getByteFrequencyData(window.dataArray);
+    let sum = 0;
+    for (let i = 0; i < window.dataArray.length; i++) sum += window.dataArray[i];
+    const average = sum / window.dataArray.length;
+    const normalized = average / 255;
+    particlesMaterial.size = 0.01 + normalized * 0.3;
+  }
 
   controls.update();
+
+  // 🌀 Afterimage fade effect
+  renderer.autoClear = false;
+  renderer.render(afterimageScene, afterimageCamera); // transparent overlay
   renderer.render(scene, camera);
+  renderer.autoClear = true;
 }
+
       animate();
+
 
       window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
