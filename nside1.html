@@ -48,59 +48,105 @@
       window.addEventListener("DOMContentLoaded", () => {
         const music = document.getElementById("bg-music");
         const toggle = document.getElementById("audio-toggle");
-    
+
         if (!music) return;
-    
+
         // Start at random position (once metadata is available)
         music.addEventListener("loadedmetadata", () => {
           music.currentTime = Math.random() * music.duration;
         });
-    
+
         // Optional toggle button
         if (toggle) {
           toggle.addEventListener("click", () => {
             if (music.paused) {
-              music.play().then(() => toggle.textContent = "🔊").catch(console.warn);
+              music
+                .play()
+                .then(() => (toggle.textContent = "🔊"))
+                .catch(console.warn);
             } else {
               music.pause();
               toggle.textContent = "🔇";
             }
           });
         }
-    
+
         // === USER GESTURE NEEDED ===
         const unlockAudio = () => {
           // Create audio context if needed
           if (!window.audioContext) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const ctx = new (window.AudioContext ||
+              window.webkitAudioContext)();
             window.audioContext = ctx;
           }
-    
+
           const ctx = window.audioContext;
-    
+
           // Resume context if suspended
           if (ctx.state === "suspended") {
             ctx.resume();
           }
-    
+
           // Play the music
           if (music.paused) {
-            music.play().then(() => {
-              if (toggle) toggle.textContent = "🔊";
-            }).catch(console.warn);
+            music
+              .play()
+              .then(() => {
+                if (toggle) toggle.textContent = "🔊";
+              })
+              .catch(console.warn);
           }
-    
+
           // Remove listeners after first gesture
           document.removeEventListener("click", unlockAudio);
           document.removeEventListener("touchstart", unlockAudio);
         };
-    
+
         document.addEventListener("click", unlockAudio);
         document.addEventListener("touchstart", unlockAudio);
       });
+
+      document.addEventListener("click", unlockAudio, { once: true });
+      document.addEventListener("touchstart", unlockAudio, { once: true });
+
+      function unlockAudio() {
+        const audio = document.getElementById("bg-music");
+
+        if (!window.audioContext) {
+          window.audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
+        const context = window.audioContext;
+
+        // Resume context if needed
+        if (context.state === "suspended") {
+          context.resume();
+        }
+
+        // Safe analyser creation inside gesture
+        if (!window.audioSource) {
+          try {
+            const source = context.createMediaElementSource(audio);
+            window.analyser = context.createAnalyser();
+            window.analyser.fftSize = 64;
+            window.dataArray = new Uint8Array(
+              window.analyser.frequencyBinCount
+            );
+
+            source.connect(window.analyser);
+            window.analyser.connect(context.destination);
+            window.audioSource = source;
+          } catch (e) {
+            console.warn("Analyser creation failed:", e);
+          }
+        }
+
+        // Now try playing the audio
+        if (audio.paused) {
+          audio.play().catch((e) => console.warn("Play failed:", e));
+        }
+      }
     </script>
-    
-    
 
     <!-- Your Three.js libraries -->
     <script src="libs/three/three.min.js"></script>

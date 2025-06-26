@@ -196,15 +196,15 @@ function animate() {
 
 
   // Inside animate() loop, after your existing logic
-if (analyser && dataArray) {
-    analyser.getByteFrequencyData(dataArray);
-    let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-    const average = sum / dataArray.length;
-    const normalized = average / 255;
-    particlesMaterial.size = 0.01 + normalized * 0.3; // Adjust range as needed
+if (window.analyser && window.dataArray) {
+  window.analyser.getByteFrequencyData(window.dataArray);
+  let sum = 0;
+  for (let i = 0; i < window.dataArray.length; i++) sum += window.dataArray[i];
+  const average = sum / window.dataArray.length;
+  const normalized = average / 255;
+  particlesMaterial.size = 0.01 + normalized * 0.3;
+}
 
-  }
 
 
   controls.update();
