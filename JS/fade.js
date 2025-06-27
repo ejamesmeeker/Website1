@@ -1,21 +1,32 @@
-window.addEventListener('DOMContentLoaded', () => {
+function hideFadeOverlay() {
   const fadeOverlay = document.getElementById('fade-overlay');
+  if (fadeOverlay) {
+    requestAnimationFrame(() => {
+      fadeOverlay.classList.add('hidden');
+    });
+  }
+}
 
-  // Start with fade overlay visible, then fade out to reveal page
-  requestAnimationFrame(() => {
-    fadeOverlay.classList.add('hidden');
-  });
+window.addEventListener('DOMContentLoaded', () => {
+  hideFadeOverlay();
 
-  // Fade out on link click, then navigate
   document.querySelectorAll('.links-box a').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
-
-      fadeOverlay.classList.remove('hidden'); // fade overlay back in
+      const fadeOverlay = document.getElementById('fade-overlay');
+      fadeOverlay.classList.remove('hidden');
 
       setTimeout(() => {
         window.location.href = link.href;
-      }, 600); // same duration as CSS transition
+      }, 600); // Match your CSS transition duration
     });
   });
 });
+
+// Handle mobile back-forward cache restoration
+window.addEventListener('pageshow', event => {
+  if (event.persisted) {
+    hideFadeOverlay();
+  }
+});
+

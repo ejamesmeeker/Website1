@@ -191,6 +191,11 @@ a:hover {
   font-size: 60px;
 }
 
+.links-box a:hover {
+  color: dodgerblue;
+  background: tomato;
+}
+
 #fade-overlay {
   position: fixed;
   top: 0; left: 0;
