@@ -87,7 +87,6 @@ loader6.load('Assets/3d/tree.obj', (obj) => {
 });
 
 
-
       // Load texture for the room walls
       const loader = new THREE.TextureLoader();
       const roomTexture = loader.load(
@@ -344,4 +343,6 @@ function animate() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+
+
       });
