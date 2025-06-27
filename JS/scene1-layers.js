@@ -185,8 +185,20 @@ if (layer.height) link.style.height = typeof layer.height === "number" ? `${laye
 
       // Optional hover effect
       // Desktop hover
-link.addEventListener("mouseenter", () => link.classList.add("hovered"));
-link.addEventListener("mouseleave", () => link.classList.remove("hovered"));
+      const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
+      if (isTouch) {
+        link.addEventListener("touchstart", () => {
+          link.classList.add("hovered");
+          setTimeout(() => {
+            link.classList.remove("hovered");
+          }, 500);
+        });
+      } else {
+        link.addEventListener("mouseenter", () => link.classList.add("hovered"));
+        link.addEventListener("mouseleave", () => link.classList.remove("hovered"));
+      }
+      
 
 // Mobile simulated hover
 link.addEventListener("touchstart", () => {
