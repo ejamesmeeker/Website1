@@ -219,7 +219,7 @@ mouseY = Math.min(window.innerHeight, Math.max(0, mouseY));
 
   triggers.forEach(trigger => {
     const hit = isColliding(worldX, worldY, trigger);
-    trigger.style.backgroundColor = hit ? "rgba(0, 255, 0, 0.5)" : "rgba(0, 255, 0, 0.2)";
+    trigger.style.backgroundColor = hit ? "rgba(0, 76, 255, 0.37)" : "rgba(255, 0, 0, 0.46)";
 
     if (hit && activeTrigger !== trigger) {
       activeTrigger = trigger;

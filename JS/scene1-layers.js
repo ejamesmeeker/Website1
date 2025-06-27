@@ -184,8 +184,20 @@ if (layer.height) link.style.height = typeof layer.height === "number" ? `${laye
       link.classList.add("layer-link");
 
       // Optional hover effect
-      link.addEventListener("mouseenter", () => link.classList.add("hovered"));
-      link.addEventListener("mouseleave", () => link.classList.remove("hovered"));
+      // Desktop hover
+link.addEventListener("mouseenter", () => link.classList.add("hovered"));
+link.addEventListener("mouseleave", () => link.classList.remove("hovered"));
+
+// Mobile simulated hover
+link.addEventListener("touchstart", () => {
+  link.classList.add("hovered");
+
+  // Optional: remove hover class after 500ms
+  setTimeout(() => {
+    link.classList.remove("hovered");
+  }, 500);
+});
+
 
       world.appendChild(link);
     } else {

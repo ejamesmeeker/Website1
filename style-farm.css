@@ -178,6 +178,16 @@ a:hover {
   scale: 200%;
 }
 
+.exclamation {
+  position: absolute;
+  top: -70px; /* adjust as needed */
+  right: -15px; /* adjust as needed */
+  color: red;
+  font-size: 3rem;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+
 .trail {
   position: absolute;
   width: 50px;
