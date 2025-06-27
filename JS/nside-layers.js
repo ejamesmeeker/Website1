@@ -37,7 +37,7 @@ afterimageScene.add(fadePlane);
       
 
     scene.background = new THREE.Color(0x000);
-    scene.fog = new THREE.Fog(0x222233, 10, 20);
+    scene.fog = new THREE.Fog(0x222233, 10, 25);
 
 const loader3 = new THREE.OBJLoader();
 
@@ -75,7 +75,7 @@ loader3.load('Assets/3d/business.obj', (obj) => {
       // Load texture for the room walls
       const loader = new THREE.TextureLoader();
       const roomTexture = loader.load(
-        "https://threejs.org/examples/textures/brick_diffuse.jpg"
+        "Assets/Gallery/gallery1/5-DIS1.jpg"
       );
 
       const roomMaterial = new THREE.MeshBasicMaterial({
@@ -89,6 +89,23 @@ loader3.load('Assets/3d/business.obj', (obj) => {
       );
       room.position.set(-5,-5,-5)
       scene.add(room);
+
+      const loader5 = new THREE.TextureLoader();
+      const roomTexture2 = loader.load(
+        "Assets/Images/scene1/monet.jpg"
+      );
+
+      const roomMaterial2 = new THREE.MeshBasicMaterial({
+        map: roomTexture2,
+        side: THREE.BackSide,
+      });
+
+      const room2 = new THREE.Mesh(
+        new THREE.BoxGeometry(20, 20, 30),
+        roomMaterial2
+      );
+      room2.position.set(-20,5,20)
+      scene.add(room2);
 
       const mirroredRoom = room.clone();
 mirroredRoom.scale.x *= -.1;
