@@ -70,6 +70,22 @@ loader3.load('Assets/3d/business.obj', (obj) => {
   scene.add(obj);
 });
 
+const loader6 = new THREE.OBJLoader();
+
+loader6.load('Assets/3d/tree.obj', (obj) => {
+  obj.traverse((child) => {
+    if (child.isMesh) {
+      child.material = new THREE.MeshBasicMaterial({
+        color: 0x1c731a,
+        wireframe: true,
+      });
+    }
+  });
+  obj.scale.set(30,50,30);
+  obj.position.set(0, -50, 0);
+  scene.add(obj);
+});
+
 
 
       // Load texture for the room walls
