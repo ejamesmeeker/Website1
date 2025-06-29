@@ -1,13 +1,16 @@
 // === RANDOM SOUND GENERATOR SYSTEM ===
 // Works best when included after a user gesture (like click/touch)
 
-// Ensure audioCtx is globally accessible and created only once
-const audioCtx = window.audioContext || new (window.AudioContext || window.webkitAudioContext)();
-window.audioContext = audioCtx;
+// Lazy init for AudioContext (mobile safe)
+function getAudioContext() {
+  if (!window.audioContext) {
+    window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return window.audioContext;
+}
 
 let lastScreechTime = 0;
 const screechCooldown = 100; // ms
-
 
 class RandomSynth {
   constructor(ctx) {
@@ -25,7 +28,6 @@ class RandomSynth {
       const gain = this.ctx.createGain();
       const pan = this.ctx.createStereoPanner();
 
-      // 🎛️ Randomize core properties
       osc.type = this.randomWaveform();
       osc.frequency.value = this.randomFrequency();
 
@@ -33,20 +35,16 @@ class RandomSynth {
       const attack = 0.005;
       const release = 0.08;
 
-      // Envelope: short and snappy (staccato-friendly)
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.linearRampToValueAtTime(0.2, now + attack);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + duration - release);
 
-      // Stereo panning
       pan.pan.value = Math.random() * 2 - 1;
 
-      // Connect & play
       osc.connect(gain).connect(pan).connect(this.ctx.destination);
       osc.start(now);
       osc.stop(now + duration);
 
-      // Schedule next sound
       const nextDelay = this.randomInterval();
       setTimeout(loop, nextDelay);
     };
@@ -58,25 +56,20 @@ class RandomSynth {
     this.isRunning = false;
   }
 
-  // === Helpers ===
-
   randomWaveform() {
     const types = ["sine", "square", "sawtooth", "triangle"];
     return types[Math.floor(Math.random() * types.length)];
   }
 
   randomFrequency() {
-    // Random within a pleasing musical range (100–1500Hz)
     return Math.pow(2, Math.random() * 5 + 5); // ~100–1500Hz
   }
 
   randomDuration() {
-    // Short bursts: 0.1–0.5s
     return 0.1 + Math.random() * 0.4;
   }
 
   randomInterval() {
-    // Trigger every 200–2000ms
     return 200 + Math.random() * 1800;
   }
 }
@@ -85,17 +78,9 @@ class RandomSynth {
 window.addEventListener(
   "pointerdown",
   () => {
-    if (!window.audioContext) {
-      window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
+    const ctx = getAudioContext();
+    if (ctx.state === "suspended") ctx.resume();
 
-    const ctx = window.audioContext;
-
-    if (ctx.state === "suspended") {
-      ctx.resume();
-    }
-
-    // Only start synths if not already running
     if (!window.synthEngines || window.synthEngines.length === 0) {
       const numGenerators = Math.floor(Math.random() * 3) + 4;
       window.synthEngines = [];
@@ -111,40 +96,37 @@ window.addEventListener(
   { once: true }
 );
 
-
 let interactionCount = 0;
 
 function spawnExtraOscillator() {
+  const ctx = getAudioContext();
   const freq = Math.random() * 1000 + 100;
-  const waveform = ["sine", "square", "triangle", "sawtooth"][
-    Math.floor(Math.random() * 4)
-  ];
+  const waveform = ["sine", "square", "triangle", "sawtooth"][Math.floor(Math.random() * 4)];
   const dur = Math.random() * 0.4 + 0.05;
   const detune = (Math.random() - 0.5) * 100;
   const pan = (Math.random() - 0.5) * 2;
 
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const panner = new StereoPannerNode(audioCtx, { pan });
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const panner = new StereoPannerNode(ctx, { pan });
 
   osc.type = waveform;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  osc.detune.setValueAtTime(detune, audioCtx.currentTime);
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  osc.detune.setValueAtTime(detune, ctx.currentTime);
 
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
 
-  osc.connect(gain).connect(panner).connect(audioCtx.destination);
+  osc.connect(gain).connect(panner).connect(ctx.destination);
   osc.start();
-  osc.stop(audioCtx.currentTime + dur);
+  osc.stop(ctx.currentTime + dur);
 }
 
 function createScreechSound() {
-  const ctx = audioCtx;
+  const ctx = getAudioContext();
   const now = ctx.currentTime;
 
-  // White noise buffer
-  const bufferSize = ctx.sampleRate * .02;
+  const bufferSize = ctx.sampleRate * 0.02;
   const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const output = noiseBuffer.getChannelData(0);
   for (let i = 0; i < bufferSize; i++) {
@@ -158,15 +140,13 @@ function createScreechSound() {
   const noiseGain = ctx.createGain();
   noiseGain.gain.setValueAtTime(0.8, now);
 
-  // Ring-modulated oscillator
   const osc = ctx.createOscillator();
   osc.type = "sawtooth";
-  osc.frequency.setValueAtTime(Math.random() * 80 + 80, now); // gritty low freq
+  osc.frequency.setValueAtTime(Math.random() * 80 + 80, now);
 
   const oscGain = ctx.createGain();
   oscGain.gain.setValueAtTime(0.5, now);
 
-  // High-frequency bright oscillator for feedback/high-end buzz
   const highOsc = ctx.createOscillator();
   highOsc.type = "triangle";
   highOsc.frequency.setValueAtTime(6000 + Math.random() * 2000, now);
@@ -174,41 +154,34 @@ function createScreechSound() {
   const highGain = ctx.createGain();
   highGain.gain.setValueAtTime(0.03, now);
 
-  // Distortion curve
   const distortion = ctx.createWaveShaper();
   distortion.curve = makeDistortionCurve(600);
   distortion.oversample = "4x";
 
-  // Filter sweep (bandpass)
   const filter = ctx.createBiquadFilter();
   filter.type = "bandpass";
   filter.frequency.setValueAtTime(300, now);
   filter.Q.setValueAtTime(10, now);
   filter.frequency.linearRampToValueAtTime(8000, now + 0.7);
 
-  // High shelf boost for brightness
   const highShelf = ctx.createBiquadFilter();
   highShelf.type = "highshelf";
   highShelf.frequency.setValueAtTime(5000, now);
   highShelf.gain.setValueAtTime(6, now);
 
-  // Feedback delay node
   const delay = ctx.createDelay();
   delay.delayTime.setValueAtTime(0.03, now);
 
   const feedbackGain = ctx.createGain();
   feedbackGain.gain.setValueAtTime(0.8, now);
 
-  // Connect feedback loop
   delay.connect(feedbackGain);
   feedbackGain.connect(delay);
 
-  // Master fade
   const finalGain = ctx.createGain();
   finalGain.gain.setValueAtTime(0.25, now);
   finalGain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
 
-  // Connect chain
   noise.connect(noiseGain).connect(filter);
   osc.connect(oscGain).connect(filter);
   highOsc.connect(highGain).connect(filter);
@@ -224,8 +197,6 @@ function createScreechSound() {
   highOsc.stop(now + 3.0);
 }
 
-
-// Distortion curve generator
 function makeDistortionCurve(amount) {
   const k = typeof amount === "number" ? amount : 50;
   const n_samples = 44100;
@@ -239,75 +210,50 @@ function makeDistortionCurve(amount) {
   return curve;
 }
 
-// Global variable to track drag state
+let isDragging = false;
 
 window.addEventListener("mousedown", () => {
   isDragging = true;
 });
-
 window.addEventListener("mouseup", () => {
   isDragging = false;
 });
-
-window.addEventListener("mousemove", (e) => {
-  if (isDragging) {
-    const now = performance.now();
-    if (now - lastScreechTime > screechCooldown) {
-      createScreechSound();
-      lastScreechTime = now;
-    }
+window.addEventListener("mousemove", () => {
+  if (isDragging && performance.now() - lastScreechTime > screechCooldown) {
+    createScreechSound();
+    lastScreechTime = performance.now();
   }
 });
-
 window.addEventListener("touchstart", () => {
   isDragging = true;
 });
-
 window.addEventListener("touchend", () => {
   isDragging = false;
 });
-
-window.addEventListener("touchmove", (e) => {
-  if (isDragging) {
-    const now = performance.now();
-    if (now - lastScreechTime > screechCooldown) {
-      createScreechSound();
-      lastScreechTime = now;
-    }
+window.addEventListener("touchmove", () => {
+  if (isDragging && performance.now() - lastScreechTime > screechCooldown) {
+    createScreechSound();
+    lastScreechTime = performance.now();
   }
 });
 
-// You need to implement your burstShapes and generateShape functions yourself or adapt them here.
-// For example, if you have a burstShapes function:
 function burstShapes() {
-  // placeholder: implement shape generation logic
   console.log("burstShapes called - implement shape generation logic here");
 }
 
-// Click or touch = more chaos
-window.addEventListener("click", () => {
-  if (window.audioContext && window.audioContext.state === "suspended") {
-    window.audioContext.resume();
-  }
+// Unified input triggers
+function handleUserTrigger() {
+  const ctx = getAudioContext();
+  if (ctx.state === "suspended") ctx.resume();
 
-  if (window.audioContext) {
-    spawnExtraOscillator();
-    burstShapes();
-    interactionCount++;
-  }
-});
+  spawnExtraOscillator();
+  burstShapes();
+  interactionCount++;
+}
 
-window.addEventListener("touchstart", () => {
-  if (window.audioContext && window.audioContext.state === "suspended") {
-    window.audioContext.resume();
-  }
+window.addEventListener("click", handleUserTrigger);
+window.addEventListener("touchstart", handleUserTrigger);
 
-  if (window.audioContext) {
-    spawnExtraOscillator();
-    burstShapes();
-    interactionCount++;
-  }
-});
 
 
 
