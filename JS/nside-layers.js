@@ -209,6 +209,100 @@ const textMesh = new THREE.Mesh(
 textMesh.position.set(-10, 5, 0);
 scene.add(textMesh);
 
+// Raycaster setup
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let INTERSECTED;
+
+// Object that links to a new page
+const geometry1 = new THREE.BoxGeometry(2, 2, 2);
+const material1 = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+const linkBox = new THREE.Mesh(geometry1, material1);
+linkBox.position.set(0, 100, 10);
+linkBox.name = "linkBox";
+scene.add(linkBox);
+
+// Object that opens dialogue
+const textureLoader = new THREE.TextureLoader();
+const spikeTexture = textureLoader.load("Assets/textures/vein1.png");
+
+const spikeyMaterial = new THREE.MeshStandardMaterial({
+  color: 0xc0eb34,
+  metalness: 0,
+  roughness: 1,
+  displacementMap: spikeTexture,
+  displacementScale: 5,
+  bumpMap: spikeTexture,
+  bumpScale: 2,
+  normalMap: spikeTexture,
+});
+
+const dialogSphere = new THREE.Mesh(
+  new THREE.SphereGeometry(0.6, 64, 64), // High detail!
+  spikeyMaterial
+);
+dialogSphere.position.set(-15, 0.6, 15);
+dialogSphere.name = "dialogSphere";
+scene.add(dialogSphere);
+
+
+function onClick(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children);
+
+  if (intersects.length > 0) {
+    const object = intersects[0].object;
+    switch (object.name) {
+      case "linkBox":
+        window.location.href = "angels.html"; // change to your actual page
+        break;
+      case "dialogSphere":
+        window.showDialogue("hello-farmer"); // 👈 this is what connects to dialogue2.js
+        break;
+    }
+  }
+}
+
+// Create an invisible hit area for dialogSphere
+// Invisible hitbox for dialogSphere
+const dialogHitbox = new THREE.Mesh(
+  new THREE.SphereGeometry(3, 8, 8),
+  new THREE.MeshBasicMaterial({ visible: false })
+);
+dialogHitbox.position.copy(dialogSphere.position);
+dialogHitbox.name = "dialogSphere";
+scene.add(dialogHitbox);
+
+// Invisible hitbox for linkBox
+const linkHitbox = new THREE.Mesh(
+  new THREE.BoxGeometry(2, 2, 2),
+  new THREE.MeshBasicMaterial({ visible: false })
+);
+linkHitbox.position.copy(linkBox.position);
+linkHitbox.name = "linkBox";
+scene.add(linkHitbox);
+
+// ✅ Add these right after
+const interactables = [dialogHitbox, linkHitbox];
+
+const visibleTargets = {
+  dialogSphere: dialogSphere,
+  linkBox: linkBox,
+};
+
+
+
+
+window.addEventListener("click", onClick);
+
+linkBox.userData.originalMaterial = linkBox.material;
+dialogSphere.userData.originalMaterial = dialogSphere.material;
+
+
+
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -328,6 +422,34 @@ function animate() {
   }
 
   controls.update();
+
+  // Hover detection
+raycaster.setFromCamera(mouse, camera);
+const intersects = raycaster.intersectObjects(interactables);
+
+// Reset materials
+[dialogSphere, linkBox].forEach((obj) => {
+  obj.material = obj.userData.originalMaterial;
+});
+document.body.style.cursor = "default";
+
+// Highlight if hovering
+if (intersects.length > 0) {
+  const targetName = intersects[0].object.name;
+  const visibleObject = visibleTargets[targetName];
+
+  if (visibleObject) {
+    document.body.style.cursor = "pointer";
+    visibleObject.material = new THREE.MeshStandardMaterial({
+      color: 0xfff,
+      emissive: 0xfff,
+      metalness: 1,
+      roughness: 0,
+    });
+  }
+}
+
+
 
   // 🌀 Afterimage fade effect
   renderer.autoClear = false;
