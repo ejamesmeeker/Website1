@@ -5,6 +5,10 @@
 const audioCtx = window.audioContext || new (window.AudioContext || window.webkitAudioContext)();
 window.audioContext = audioCtx;
 
+let lastScreechTime = 0;
+const screechCooldown = 100; // ms
+
+
 class RandomSynth {
   constructor(ctx) {
     this.ctx = ctx;
@@ -247,7 +251,11 @@ window.addEventListener("mouseup", () => {
 
 window.addEventListener("mousemove", (e) => {
   if (isDragging) {
-    createScreechSound();
+    const now = performance.now();
+    if (now - lastScreechTime > screechCooldown) {
+      createScreechSound();
+      lastScreechTime = now;
+    }
   }
 });
 
@@ -261,7 +269,11 @@ window.addEventListener("touchend", () => {
 
 window.addEventListener("touchmove", (e) => {
   if (isDragging) {
-    createScreechSound();
+    const now = performance.now();
+    if (now - lastScreechTime > screechCooldown) {
+      createScreechSound();
+      lastScreechTime = now;
+    }
   }
 });
 
@@ -274,17 +286,28 @@ function burstShapes() {
 
 // Click or touch = more chaos
 window.addEventListener("click", () => {
-  if (audioCtx.state === "suspended") audioCtx.resume();
-  spawnExtraOscillator();
-  burstShapes();
-  interactionCount++;
+  if (window.audioContext && window.audioContext.state === "suspended") {
+    window.audioContext.resume();
+  }
+
+  if (window.audioContext) {
+    spawnExtraOscillator();
+    burstShapes();
+    interactionCount++;
+  }
 });
 
 window.addEventListener("touchstart", () => {
-  if (audioCtx.state === "suspended") audioCtx.resume();
-  spawnExtraOscillator();
-  burstShapes();
-  interactionCount++;
+  if (window.audioContext && window.audioContext.state === "suspended") {
+    window.audioContext.resume();
+  }
+
+  if (window.audioContext) {
+    spawnExtraOscillator();
+    burstShapes();
+    interactionCount++;
+  }
 });
+
 
 
