@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Responsive Shape Grid</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #111;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        background: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="dialogue-box"
+      style="
+        position: absolute;
+        bottom: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 100%;
+        background-color: rgba(0, 0, 50, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #fff;
+        padding: 20px;
+        border: 1px solid #555;
+        border-radius: 20px;
+        font-family: monospace;
+        font-size: 20px;
+        z-index: 9999;
+      "
+    >
+      <div id="dialogue-text"></div>
+      <div
+        id="click-prompt"
+        style="margin-top: 10px; font-size: 10px; color: #aaa; opacity: 0.7"
+      >
+        (click to continue)
+      </div>
+    </div>
+
+    <canvas id="gridCanvas"></canvas>
+
+    <script>
+      const canvas = document.getElementById("gridCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const cols = 12;
+      const rows = 6;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function randomPolygon(ctx, x, y, radius, sides) {
+        const angleStep = (Math.PI * 2) / sides;
+        ctx.beginPath();
+        for (let i = 0; i < sides; i++) {
+          const angle = i * angleStep + Math.random() * 0.2;
+          const px = x + Math.cos(angle) * radius * (0.7 + Math.random() * 0.3);
+          const py = y + Math.sin(angle) * radius * (0.7 + Math.random() * 0.3);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+
+        ctx.fillStyle = `hsl(${Math.random() * 360}, 80%, 60%)`;
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.1)";
+        ctx.stroke();
+      }
+
+      function drawGrid() {
+        const cellWidth = canvas.width / cols;
+        const cellHeight = canvas.height / rows;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const centerX = c * cellWidth + cellWidth / 2;
+            const centerY = r * cellHeight + cellHeight / 2;
+            const radius = Math.min(cellWidth, cellHeight) * 0.7;
+
+            const sides = Math.floor(Math.random() * 8) + 3; // 3 to 10 sides
+            const shapeCount = Math.floor(Math.random() * 3) + 1; // 1–3 overlapping shapes
+
+            for (let i = 0; i < shapeCount; i++) {
+              randomPolygon(ctx, centerX, centerY, radius, sides);
+            }
+          }
+        }
+      }
+
+      function updateAndDraw() {
+        resizeCanvas();
+        drawGrid();
+      }
+
+      // Initial draw
+      updateAndDraw();
+
+      // Redraw every 0.5s
+      setInterval(drawGrid, 500);
+
+      // Handle window resizing
+      window.addEventListener("resize", updateAndDraw);
+    </script>
+    <script src="JS/sound-generator.js"></script>
+    <script src="JS/dialogue3.js"></script>
+    <script>
+      // Auto-start dialogue before user click
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.showDialogue) {
+          window.showDialogue("intro-message");
+        } else {
+          console.warn("Dialogue system not ready.");
+        }
+      });
+    </script>
+
+    <script src="JS/sound-generator.js"></script>
+  </body>
+</html>
