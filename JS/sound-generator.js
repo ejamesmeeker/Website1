@@ -79,17 +79,25 @@ class RandomSynth {
 
 // === Setup: Start synths after first user interaction ===
 window.addEventListener(
-  "click",
+  "pointerdown",
   () => {
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (!window.audioContext) {
+      window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
 
-    // Start 4–6 overlapping random generators if none running yet
+    const ctx = window.audioContext;
+
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
+    // Only start synths if not already running
     if (!window.synthEngines || window.synthEngines.length === 0) {
       const numGenerators = Math.floor(Math.random() * 3) + 4;
       window.synthEngines = [];
 
       for (let i = 0; i < numGenerators; i++) {
-        const synth = new RandomSynth(audioCtx);
+        const synth = new RandomSynth(ctx);
         window.synthEngines.push(synth);
       }
 
@@ -98,6 +106,7 @@ window.addEventListener(
   },
   { once: true }
 );
+
 
 let interactionCount = 0;
 
