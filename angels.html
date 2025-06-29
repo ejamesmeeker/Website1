@@ -91,8 +91,8 @@
             const centerY = r * cellHeight + cellHeight / 2;
             const radius = Math.min(cellWidth, cellHeight) * 0.7;
 
-            const sides = Math.floor(Math.random() * 8) + 3; // 3 to 10 sides
-            const shapeCount = Math.floor(Math.random() * 3) + 1; // 1–3 overlapping shapes
+            const sides = Math.floor(Math.random() * 8) + 3;
+            const shapeCount = Math.floor(Math.random() * 3) + 1;
 
             for (let i = 0; i < shapeCount; i++) {
               randomPolygon(ctx, centerX, centerY, radius, sides);
@@ -106,28 +106,19 @@
         drawGrid();
       }
 
-      // Initial draw
       updateAndDraw();
-
-      // Redraw every 0.5s
       setInterval(drawGrid, 500);
-
-      // Handle window resizing
       window.addEventListener("resize", updateAndDraw);
     </script>
-    <script src="JS/sound-generator.js"></script>
-    <script src="JS/dialogue3.js"></script>
-    <script>
-      // Auto-start dialogue before user click
-      window.addEventListener("DOMContentLoaded", () => {
-        if (window.showDialogue) {
-          window.showDialogue("intro-message");
-        } else {
-          console.warn("Dialogue system not ready.");
-        }
-      });
-    </script>
 
     <script src="JS/sound-generator.js"></script>
+    <script src="JS/dialogue3.js"></script>
+
+    <script>
+      // Trigger dialogue on first user gesture (mobile-safe)
+      document.addEventListener("pointerdown", () => {
+        window.showDialogue?.("intro-message");
+      }, { once: true });
+    </script>
   </body>
 </html>
