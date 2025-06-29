@@ -9,6 +9,15 @@ function getAudioContext() {
   return window.audioContext;
 }
 
+document.addEventListener("pointerdown", () => {
+  const ctx = getAudioContext();
+  if (ctx.state === "suspended") {
+    ctx.resume().then(() => {
+      console.log("AudioContext resumed via pointerdown");
+    });
+  }
+}, { once: true });
+
 let lastScreechTime = 0;
 const screechCooldown = 100; // ms
 
